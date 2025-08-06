@@ -249,7 +249,7 @@ export default function Search() {
                           <Label className="text-sm font-medium text-gray-700 mb-3 block">
                             {language === 'fa' ? 'دسته‌بندی' : 'Category'}
                           </Label>
-                          <Select value={filters.category || ''} onValueChange={(value) => updateFilters({ category: value })}>
+                          <Select value={filters.category || ''} onValueChange={(value) => updateFilters({ category: value || '' })}>
                             <SelectTrigger>
                               <SelectValue placeholder={language === 'fa' ? 'انتخاب دسته‌بندی' : 'Select category'} />
                             </SelectTrigger>
@@ -273,7 +273,7 @@ export default function Search() {
                           <Label className="text-sm font-medium text-gray-700 mb-3 block">
                             {language === 'fa' ? 'برند' : 'Brand'}
                           </Label>
-                          <Select value={filters.brand || ''} onValueChange={(value) => updateFilters({ brand: value })}>
+                          <Select value={filters.brand || ''} onValueChange={(value) => updateFilters({ brand: value || '' })}>
                             <SelectTrigger>
                               <SelectValue placeholder={language === 'fa' ? 'انتخاب برند' : 'Select brand'} />
                             </SelectTrigger>
@@ -411,7 +411,7 @@ export default function Search() {
                 </div>
 
                 {/* Sort Dropdown */}
-                <Select value={sortBy || 'relevance'} onValueChange={setSortBy}>
+                <Select value={sortBy || 'relevance'} onValueChange={(value) => setSortBy(value || 'relevance')}>
                   <SelectTrigger className="w-48">
                     <ArrowUpDown className="w-4 h-4 mr-2" />
                     <SelectValue />
