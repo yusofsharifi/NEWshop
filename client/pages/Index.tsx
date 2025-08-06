@@ -1,12 +1,12 @@
 import { Link } from 'react-router-dom';
-import { 
-  ArrowRight, 
-  Shield, 
-  Truck, 
-  Users, 
-  Star, 
-  CheckCircle, 
-  Zap, 
+import {
+  ArrowRight,
+  Shield,
+  Truck,
+  Users,
+  Star,
+  CheckCircle,
+  Zap,
   Droplets,
   Thermometer,
   Filter,
@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function Index() {
   const categories = [
