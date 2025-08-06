@@ -9,7 +9,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { LanguageProvider } from "./contexts/LanguageContext";
 import { CartProvider } from "./contexts/CartContext";
 import { AuthProvider } from "./contexts/AuthContext";
-import Header from "./components/Header";
+import HeaderNew from "./components/HeaderNew";
 import Footer from "./components/Footer";
 import CartDrawer from "./components/CartDrawer";
 import WhatsAppWidget from "./components/WhatsAppWidget";
@@ -30,6 +30,7 @@ import AdminCategories from "./pages/admin/Categories";
 import AdminCustomers from "./pages/admin/Customers";
 import AdminSettings from "./pages/admin/Settings";
 import ProductForm from "./pages/admin/ProductForm";
+import MenuManagement from "./pages/admin/MenuManagement";
 
 const queryClient = new QueryClient();
 
@@ -43,7 +44,7 @@ const App = () => (
           <Sonner />
           <BrowserRouter>
           <div className="min-h-screen flex flex-col">
-            <Header />
+            <HeaderNew />
             <CartDrawer />
             <WhatsAppWidget />
             <main className="flex-1">
@@ -255,6 +256,11 @@ const App = () => (
               <Route path="/admin/customers" element={
                 <ProtectedRoute requireAdmin>
                   <AdminCustomers />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/menus" element={
+                <ProtectedRoute requireAdmin>
+                  <MenuManagement />
                 </ProtectedRoute>
               } />
               <Route path="/admin/settings" element={
