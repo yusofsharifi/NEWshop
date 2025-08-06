@@ -49,6 +49,33 @@ export default function Index() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [bestSellers, setBestSellers] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+
+  const heroRef = useRef(null);
+  const featuresRef = useRef(null);
+  const categoriesRef = useRef(null);
+  const bestSellersRef = useRef(null);
+
+  const { scrollYProgress } = useScroll();
+  const heroY = useTransform(scrollYProgress, [0, 1], ['0%', '50%']);
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0]);
+
+  const featuresInView = useInView(featuresRef, { once: true, margin: "-100px" });
+  const categoriesInView = useInView(categoriesRef, { once: true, margin: "-100px" });
+  const bestSellersInView = useInView(bestSellersRef, { once: true, margin: "-100px" });
+
+  // Mouse movement tracking for parallax effects
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePosition({
+        x: (e.clientX - window.innerWidth / 2) / 50,
+        y: (e.clientY - window.innerHeight / 2) / 50
+      });
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
