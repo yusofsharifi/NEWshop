@@ -257,8 +257,8 @@ export default function Search() {
                               <SelectItem value="">
                                 {language === 'fa' ? 'همه دسته‌ها' : 'All categories'}
                               </SelectItem>
-                              {filterOptions.categories.map(category => (
-                                <SelectItem key={category} value={category || ''}>
+                              {filterOptions.categories.filter(Boolean).map(category => (
+                                <SelectItem key={category} value={category}>
                                   {category}
                                 </SelectItem>
                               ))}
@@ -279,7 +279,7 @@ export default function Search() {
                               <SelectItem value="">
                                 {language === 'fa' ? 'همه برندها' : 'All brands'}
                               </SelectItem>
-                              {filterOptions.brands.map(brand => (
+                              {filterOptions.brands.filter(Boolean).map(brand => (
                                 <SelectItem key={brand} value={brand}>
                                   {brand}
                                 </SelectItem>
