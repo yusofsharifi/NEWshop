@@ -257,11 +257,13 @@ export default function Search() {
                               <SelectItem value="">
                                 {language === 'fa' ? 'همه دسته‌ها' : 'All categories'}
                               </SelectItem>
-                              {filterOptions.categories.filter(Boolean).map(category => (
-                                <SelectItem key={category} value={category}>
-                                  {category}
-                                </SelectItem>
-                              ))}
+                              {filterOptions.categories
+                                .filter(category => category && typeof category === 'string' && category.trim() !== '')
+                                .map(category => (
+                                  <SelectItem key={category} value={category}>
+                                    {category}
+                                  </SelectItem>
+                                ))}
                             </SelectContent>
                           </Select>
                         </div>
@@ -279,11 +281,13 @@ export default function Search() {
                               <SelectItem value="">
                                 {language === 'fa' ? 'همه برندها' : 'All brands'}
                               </SelectItem>
-                              {filterOptions.brands.filter(Boolean).map(brand => (
-                                <SelectItem key={brand} value={brand}>
-                                  {brand}
-                                </SelectItem>
-                              ))}
+                              {filterOptions.brands
+                                .filter(brand => brand && typeof brand === 'string' && brand.trim() !== '')
+                                .map(brand => (
+                                  <SelectItem key={brand} value={brand}>
+                                    {brand}
+                                  </SelectItem>
+                                ))}
                             </SelectContent>
                           </Select>
                         </div>
