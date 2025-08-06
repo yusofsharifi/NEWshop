@@ -61,7 +61,7 @@ export default function Footer() {
             <h4 className="text-lg font-semibold mb-4">{t('footer.customerService')}</h4>
             <ul className="space-y-2">
               <li><Link to="/contact" className="text-gray-300 hover:text-white transition-colors">{t('nav.contact')}</Link></li>
-              <li><Link to="/consultation" className="text-gray-300 hover:text-white transition-colors">مشاوره رایگان</Link></li>
+              <li><Link to="/consultation" className="text-gray-300 hover:text-white transition-colors">م��اوره رایگان</Link></li>
               <li><Link to="/shipping" className="text-gray-300 hover:text-white transition-colors">اطلاعات ارسال</Link></li>
               <li><Link to="/returns" className="text-gray-300 hover:text-white transition-colors">مرجوعی</Link></li>
               <li><Link to="/warranty" className="text-gray-300 hover:text-white transition-colors">ضمانت</Link></li>
@@ -113,17 +113,17 @@ export default function Footer() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-400 text-sm">
-              © 2024 AquaPro Pool Equipment. All rights reserved.
+              {t('footer.copyright')}
             </p>
-            <div className="flex space-x-6 mt-2 md:mt-0">
+            <div className={`flex mt-2 md:mt-0 ${dir === 'rtl' ? 'space-x-reverse space-x-6' : 'space-x-6'}`}>
               <Link to="/privacy" className="text-gray-400 hover:text-white text-sm transition-colors">
-                Privacy Policy
+                {t('footer.privacy')}
               </Link>
               <Link to="/terms" className="text-gray-400 hover:text-white text-sm transition-colors">
-                Terms of Service
+                {t('footer.terms')}
               </Link>
               <Link to="/sitemap" className="text-gray-400 hover:text-white text-sm transition-colors">
-                Sitemap
+                {t('footer.sitemap')}
               </Link>
             </div>
           </div>
