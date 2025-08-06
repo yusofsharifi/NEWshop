@@ -40,13 +40,8 @@ const App = () => (
               <Route path="/" element={<Index />} />
 
               {/* Product Routes */}
-              <Route path="/products" element={
-                <PlaceholderPage
-                  title="Product Catalog"
-                  description="Browse our complete selection of professional pool equipment."
-                  suggestedAction="This comprehensive catalog is being built with advanced filtering and search capabilities."
-                />
-              } />
+              <Route path="/products" element={<Search />} />
+              <Route path="/search" element={<Search />} />
 
               <Route path="/category/pumps" element={
                 <PlaceholderPage
