@@ -33,7 +33,8 @@ const App = () => (
           <div className="min-h-screen flex flex-col">
             <Header />
             <CartDrawer />
-          <main className="flex-1">
+            <WhatsAppWidget />
+            <main className="flex-1">
             <Routes>
               <Route path="/" element={<Index />} />
 
