@@ -75,48 +75,6 @@ export default function Index() {
     return icons[iconName] || Wrench;
   };
 
-  const bestSellers = [
-    {
-      id: 1,
-      name: 'Pentair SuperFlo VS Variable Speed Pump',
-      price: 849,
-      originalPrice: 999,
-      image: '/api/placeholder/250/200',
-      rating: 4.8,
-      reviews: 342,
-      badge: 'Best Seller'
-    },
-    {
-      id: 2,
-      name: 'Hayward SwimClear Cartridge Filter',
-      price: 379,
-      originalPrice: 449,
-      image: '/api/placeholder/250/200',
-      rating: 4.9,
-      reviews: 189,
-      badge: 'Energy Star'
-    },
-    {
-      id: 3,
-      name: 'Raypak Digital Gas Heater 266K BTU',
-      price: 1299,
-      originalPrice: 1499,
-      image: '/api/placeholder/250/200',
-      rating: 4.7,
-      reviews: 156,
-      badge: 'Professional Choice'
-    },
-    {
-      id: 4,
-      name: 'Jandy Pro Series LED Pool Light',
-      price: 299,
-      originalPrice: 399,
-      image: '/api/placeholder/250/200',
-      rating: 4.9,
-      reviews: 234,
-      badge: 'New Arrival'
-    }
-  ];
 
   const features = [
     {
