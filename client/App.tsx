@@ -109,6 +109,7 @@ const App = () => (
               } />
 
               <Route path="/checkout" element={<Checkout />} />
+              <Route path="/order-success" element={<OrderSuccess />} />
 
               <Route path="/account" element={
                 <PlaceholderPage
