@@ -43,56 +43,64 @@ export default function Footer() {
           </div>
 
           {/* Quick Links */}
-          <div>
-            <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
+          <div className={dir === 'rtl' ? 'text-right' : 'text-left'}>
+            <h4 className="text-lg font-semibold mb-4">{t('footer.quickLinks')}</h4>
             <ul className="space-y-2">
-              <li><Link to="/products" className="text-gray-300 hover:text-white transition-colors">All Products</Link></li>
-              <li><Link to="/category/pumps" className="text-gray-300 hover:text-white transition-colors">Pool Pumps</Link></li>
-              <li><Link to="/category/filters" className="text-gray-300 hover:text-white transition-colors">Filters</Link></li>
-              <li><Link to="/category/heaters" className="text-gray-300 hover:text-white transition-colors">Heaters</Link></li>
-              <li><Link to="/category/chemicals" className="text-gray-300 hover:text-white transition-colors">Chemicals</Link></li>
-              <li><Link to="/bundles" className="text-gray-300 hover:text-white transition-colors">Product Bundles</Link></li>
-              <li><Link to="/best-sellers" className="text-gray-300 hover:text-white transition-colors">Best Sellers</Link></li>
+              <li><Link to="/products" className="text-gray-300 hover:text-white transition-colors">{t('nav.products')}</Link></li>
+              <li><Link to="/category/pumps" className="text-gray-300 hover:text-white transition-colors">{t('nav.pumps')}</Link></li>
+              <li><Link to="/category/filters" className="text-gray-300 hover:text-white transition-colors">{t('nav.filters')}</Link></li>
+              <li><Link to="/category/heaters" className="text-gray-300 hover:text-white transition-colors">{t('nav.heaters')}</Link></li>
+              <li><Link to="/category/chemicals" className="text-gray-300 hover:text-white transition-colors">{t('nav.chemicals')}</Link></li>
+              <li><Link to="/bundles" className="text-gray-300 hover:text-white transition-colors">بسته محصولات</Link></li>
+              <li><Link to="/best-sellers" className="text-gray-300 hover:text-white transition-colors">پرفروش‌ترین</Link></li>
             </ul>
           </div>
 
           {/* Customer Service */}
-          <div>
-            <h4 className="text-lg font-semibold mb-4">Customer Service</h4>
+          <div className={dir === 'rtl' ? 'text-right' : 'text-left'}>
+            <h4 className="text-lg font-semibold mb-4">{t('footer.customerService')}</h4>
             <ul className="space-y-2">
-              <li><Link to="/contact" className="text-gray-300 hover:text-white transition-colors">Contact Us</Link></li>
-              <li><Link to="/consultation" className="text-gray-300 hover:text-white transition-colors">Free Consultation</Link></li>
-              <li><Link to="/shipping" className="text-gray-300 hover:text-white transition-colors">Shipping Info</Link></li>
-              <li><Link to="/returns" className="text-gray-300 hover:text-white transition-colors">Returns</Link></li>
-              <li><Link to="/warranty" className="text-gray-300 hover:text-white transition-colors">Warranty</Link></li>
-              <li><Link to="/faq" className="text-gray-300 hover:text-white transition-colors">FAQ</Link></li>
-              <li><Link to="/blog" className="text-gray-300 hover:text-white transition-colors">Pool Care Blog</Link></li>
+              <li><Link to="/contact" className="text-gray-300 hover:text-white transition-colors">{t('nav.contact')}</Link></li>
+              <li><Link to="/consultation" className="text-gray-300 hover:text-white transition-colors">مشاوره رایگان</Link></li>
+              <li><Link to="/shipping" className="text-gray-300 hover:text-white transition-colors">اطلاعات ارسال</Link></li>
+              <li><Link to="/returns" className="text-gray-300 hover:text-white transition-colors">مرجوعی</Link></li>
+              <li><Link to="/warranty" className="text-gray-300 hover:text-white transition-colors">ضمانت</Link></li>
+              <li><Link to="/faq" className="text-gray-300 hover:text-white transition-colors">سوالات متداول</Link></li>
+              <li><Link to="/blog" className="text-gray-300 hover:text-white transition-colors">{t('nav.blog')}</Link></li>
             </ul>
           </div>
 
           {/* Contact Info */}
-          <div>
-            <h4 className="text-lg font-semibold mb-4">Contact Info</h4>
+          <div className={dir === 'rtl' ? 'text-right' : 'text-left'}>
+            <h4 className="text-lg font-semibold mb-4">{t('footer.contactInfo')}</h4>
             <div className="space-y-3">
-              <div className="flex items-start space-x-3">
+              <div className={`flex items-start ${dir === 'rtl' ? 'space-x-reverse space-x-3' : 'space-x-3'}`}>
                 <Phone className="w-5 h-5 text-blue-400 mt-1 flex-shrink-0" />
                 <div>
-                  <p className="text-white font-medium">1-800-POOL-PRO</p>
-                  <p className="text-gray-300 text-sm">Mon-Fri: 8AM-8PM EST</p>
+                  <p className="text-white font-medium">{t('header.phone')}</p>
+                  <p className="text-gray-300 text-sm">
+                    {language === 'fa' ? 'دوشنبه-جمعه: ۸ صبح-۸ شب' : 'Mon-Fri: 8AM-8PM EST'}
+                  </p>
                 </div>
               </div>
-              <div className="flex items-start space-x-3">
+              <div className={`flex items-start ${dir === 'rtl' ? 'space-x-reverse space-x-3' : 'space-x-3'}`}>
                 <Mail className="w-5 h-5 text-blue-400 mt-1 flex-shrink-0" />
                 <div>
                   <p className="text-white">support@aquapro.com</p>
-                  <p className="text-gray-300 text-sm">24/7 Email Support</p>
+                  <p className="text-gray-300 text-sm">
+                    {language === 'fa' ? 'پشتیبانی ایمیل ۲۴/۷' : '24/7 Email Support'}
+                  </p>
                 </div>
               </div>
-              <div className="flex items-start space-x-3">
+              <div className={`flex items-start ${dir === 'rtl' ? 'space-x-reverse space-x-3' : 'space-x-3'}`}>
                 <MapPin className="w-5 h-5 text-blue-400 mt-1 flex-shrink-0" />
                 <div>
-                  <p className="text-white">123 Pool Equipment Dr</p>
-                  <p className="text-gray-300 text-sm">Miami, FL 33101</p>
+                  <p className="text-white">
+                    {language === 'fa' ? 'خیابان تجهیزات استخر ۱۲۳' : '123 Pool Equipment Dr'}
+                  </p>
+                  <p className="text-gray-300 text-sm">
+                    {language === 'fa' ? 'میامی، فلوریدا ۳۳۱۰۱' : 'Miami, FL 33101'}
+                  </p>
                 </div>
               </div>
             </div>
