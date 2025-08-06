@@ -4,6 +4,8 @@ import { Search, ShoppingCart, Menu, X, Phone, User, Globe } from 'lucide-react'
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useCart } from '@/contexts/CartContext';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   DropdownMenu,
   DropdownMenuContent,
