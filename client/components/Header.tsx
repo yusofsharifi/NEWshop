@@ -285,20 +285,77 @@ export default function Header() {
               </Link>
             ))}
             <div className="pt-3 border-t border-gray-200">
-              <Link
-                to="/account"
-                className="block py-2 text-gray-700 hover:text-blue-600 font-medium transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                {t('header.myAccount')}
-              </Link>
-              <Link
-                to="/track-order"
-                className="block py-2 text-gray-700 hover:text-blue-600 font-medium transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                {t('header.trackOrder')}
-              </Link>
+              {isAuthenticated ? (
+                <>
+                  <div className="px-3 py-2 bg-gray-50 rounded-lg mb-2">
+                    <div className="flex items-center space-x-2">
+                      <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white text-sm font-semibold">
+                        {user?.username.charAt(0).toUpperCase()}
+                      </div>
+                      <div>
+                        <div className="text-sm font-semibold">{user?.username}</div>
+                        <div className="text-xs text-gray-500">
+                          {user?.role === 'admin' ? (language === 'fa' ? 'ادمین' : 'Admin') : (language === 'fa' ? 'کاربر' : 'User')}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <Link
+                    to="/account"
+                    className="block py-2 text-gray-700 hover:text-blue-600 font-medium transition-colors"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {t('header.myAccount')}
+                  </Link>
+
+                  {isAdmin && (
+                    <Link
+                      to="/admin"
+                      className="block py-2 text-gray-700 hover:text-blue-600 font-medium transition-colors"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      {language === 'fa' ? 'پنل مدیریت' : 'Admin Panel'}
+                    </Link>
+                  )}
+
+                  <Link
+                    to="/track-order"
+                    className="block py-2 text-gray-700 hover:text-blue-600 font-medium transition-colors"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {t('header.trackOrder')}
+                  </Link>
+
+                  <button
+                    onClick={() => {
+                      logout();
+                      navigate('/');
+                      setIsMenuOpen(false);
+                    }}
+                    className="block w-full text-left py-2 text-red-600 hover:text-red-700 font-medium transition-colors"
+                  >
+                    {language === 'fa' ? 'خروج' : 'Sign Out'}
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    to="/login"
+                    className="block py-2 text-gray-700 hover:text-blue-600 font-medium transition-colors"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {t('header.login')}
+                  </Link>
+                  <Link
+                    to="/register"
+                    className="block py-2 text-gray-700 hover:text-blue-600 font-medium transition-colors"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {language === 'fa' ? 'ثبت نام' : 'Register'}
+                  </Link>
+                </>
+              )}
             </div>
           </nav>
         </div>
