@@ -19,6 +19,7 @@ import NotFound from "./pages/NotFound";
 import ProductDetail from "./pages/ProductDetail";
 import Checkout from "./pages/Checkout";
 import Search from "./pages/Search";
+import SearchSimple from "./pages/SearchSimple";
 import Login from "./pages/Login";
 import OrderSuccess from "./pages/OrderSuccess";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -50,8 +51,8 @@ const App = () => (
               <Route path="/" element={<Index />} />
 
               {/* Product Routes */}
-              <Route path="/products" element={<Search />} />
-              <Route path="/search" element={<Search />} />
+              <Route path="/products" element={<SearchSimple />} />
+              <Route path="/search" element={<SearchSimple />} />
 
               <Route path="/category/pumps" element={
                 <PlaceholderPage
