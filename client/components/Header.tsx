@@ -20,6 +20,8 @@ export default function Header() {
   const [searchQuery, setSearchQuery] = useState('');
   const { language, setLanguage, t, dir } = useLanguage();
   const { setIsOpen, itemCount } = useCart();
+  const { user, isAuthenticated, isAdmin, logout } = useAuth();
+  const navigate = useNavigate();
 
   const navigation = [
     { name: t('nav.products'), href: '/products' },
