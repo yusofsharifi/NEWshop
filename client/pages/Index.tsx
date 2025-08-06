@@ -117,18 +117,18 @@ export default function Index() {
   const features = [
     {
       icon: Shield,
-      title: 'Professional Quality',
-      description: 'Only the highest quality equipment from trusted manufacturers'
+      title: t('feature.quality.title'),
+      description: t('feature.quality.description')
     },
     {
       icon: Truck,
-      title: 'Free Shipping',
-      description: 'Free shipping on all orders over $500 - nationwide delivery'
+      title: t('feature.shipping.title'),
+      description: t('feature.shipping.description')
     },
     {
       icon: Users,
-      title: 'Expert Support',
-      description: '24/7 technical support from certified pool professionals'
+      title: t('feature.support.title'),
+      description: t('feature.support.description')
     }
   ];
 
