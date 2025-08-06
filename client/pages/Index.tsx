@@ -68,56 +68,12 @@ export default function Index() {
     fetchData();
   }, []);
 
-  const categories = [
-    {
-      name: t('category.pumps.name'),
-      description: t('category.pumps.description'),
-      icon: Zap,
-      href: '/category/pumps',
-      image: '/api/placeholder/300/200',
-      count: '45+ محصول'
-    },
-    {
-      name: t('category.filters.name'),
-      description: t('category.filters.description'),
-      icon: Filter,
-      href: '/category/filters',
-      image: '/api/placeholder/300/200',
-      count: '38+ محصول'
-    },
-    {
-      name: t('category.heaters.name'),
-      description: t('category.heaters.description'),
-      icon: Thermometer,
-      href: '/category/heaters',
-      image: '/api/placeholder/300/200',
-      count: '25+ محصول'
-    },
-    {
-      name: t('category.lights.name'),
-      description: t('category.lights.description'),
-      icon: Lightbulb,
-      href: '/category/lights',
-      image: '/api/placeholder/300/200',
-      count: '32+ محصول'
-    },
-    {
-      name: t('category.chemicals.name'),
-      description: t('category.chemicals.description'),
-      icon: Droplets,
-      href: '/category/chemicals',
-      image: '/api/placeholder/300/200',
-      count: '67+ محصول'
-    },
-    {
-      name: t('category.accessories.name'),
-      description: t('category.accessories.description'),
-      icon: Wrench,
-      href: '/category/accessories',
-      image: '/api/placeholder/300/200',
-      count: '89+ محصول'
-    }
-  ];
+  const getIconComponent = (iconName: string) => {
+    const icons: { [key: string]: any } = {
+      Zap, Filter, Thermometer, Lightbulb, Droplets, Wrench
+    };
+    return icons[iconName] || Wrench;
+  };
 
   const bestSellers = [
     {
