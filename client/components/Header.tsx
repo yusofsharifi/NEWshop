@@ -75,13 +75,15 @@ export default function Header() {
         <div className="flex justify-between items-center py-4">
           {/* Logo */}
           <Link to="/" className="flex items-center">
-            <div className="flex items-center space-x-3">
+            <div className={`flex items-center ${dir === 'rtl' ? 'space-x-reverse space-x-3' : 'space-x-3'}`}>
               <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
                 <div className="w-6 h-6 bg-white rounded-full opacity-90"></div>
               </div>
-              <div>
-                <h1 className="text-2xl font-bold text-navy-900">AquaPro</h1>
-                <p className="text-sm text-gray-600">Pool Equipment Experts</p>
+              <div className={dir === 'rtl' ? 'text-right' : 'text-left'}>
+                <h1 className="text-2xl font-bold text-navy-900">
+                  {language === 'fa' ? 'آکواپرو' : 'AquaPro'}
+                </h1>
+                <p className="text-sm text-gray-600">{t('footer.company')}</p>
               </div>
             </div>
           </Link>
