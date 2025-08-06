@@ -29,8 +29,9 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <LanguageProvider>
-      <CartProvider>
-        <TooltipProvider>
+      <AuthProvider>
+        <CartProvider>
+          <TooltipProvider>
           <Toaster />
           <Sonner />
           <BrowserRouter>
@@ -209,9 +210,20 @@ const App = () => (
                 />
               } />
 
+              {/* Authentication Routes */}
+              <Route path="/login" element={<Login />} />
+
               {/* Admin Routes */}
-              <Route path="/admin" element={<AdminDashboard />} />
-              <Route path="/admin/products" element={<AdminProducts />} />
+              <Route path="/admin" element={
+                <ProtectedRoute requireAdmin>
+                  <AdminDashboard />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/products" element={
+                <ProtectedRoute requireAdmin>
+                  <AdminProducts />
+                </ProtectedRoute>
+              } />
               <Route path="/admin/products/new" element={
                 <PlaceholderPage
                   title="Add New Product"
@@ -261,8 +273,9 @@ const App = () => (
           <Footer />
         </div>
       </BrowserRouter>
-        </TooltipProvider>
-      </CartProvider>
+          </TooltipProvider>
+        </CartProvider>
+      </AuthProvider>
     </LanguageProvider>
   </QueryClientProvider>
 );
