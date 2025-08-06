@@ -18,54 +18,56 @@ import { Card, CardContent } from '@/components/ui/card';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function Index() {
+  const { t, dir } = useLanguage();
+
   const categories = [
     {
-      name: 'Pool Pumps',
-      description: 'Variable speed and single speed pumps for efficient water circulation',
+      name: t('category.pumps.name'),
+      description: t('category.pumps.description'),
       icon: Zap,
       href: '/category/pumps',
       image: '/api/placeholder/300/200',
-      count: '45+ Products'
+      count: '45+ محصول'
     },
     {
-      name: 'Filters',
-      description: 'Sand, cartridge, and DE filters for crystal clear pool water',
+      name: t('category.filters.name'),
+      description: t('category.filters.description'),
       icon: Filter,
       href: '/category/filters',
       image: '/api/placeholder/300/200',
-      count: '38+ Products'
+      count: '38+ محصول'
     },
     {
-      name: 'Heaters',
-      description: 'Gas, electric, and heat pump heaters for year-round swimming',
+      name: t('category.heaters.name'),
+      description: t('category.heaters.description'),
       icon: Thermometer,
       href: '/category/heaters',
       image: '/api/placeholder/300/200',
-      count: '25+ Products'
+      count: '25+ محصول'
     },
     {
-      name: 'Pool Lights',
-      description: 'LED and fiber optic lighting systems for stunning pool ambiance',
+      name: t('category.lights.name'),
+      description: t('category.lights.description'),
       icon: Lightbulb,
       href: '/category/lights',
       image: '/api/placeholder/300/200',
-      count: '32+ Products'
+      count: '32+ محصول'
     },
     {
-      name: 'Chemicals',
-      description: 'Professional-grade chemicals for perfect water balance',
+      name: t('category.chemicals.name'),
+      description: t('category.chemicals.description'),
       icon: Droplets,
       href: '/category/chemicals',
       image: '/api/placeholder/300/200',
-      count: '67+ Products'
+      count: '67+ محصول'
     },
     {
-      name: 'Accessories',
-      description: 'Covers, cleaners, and maintenance tools for complete pool care',
+      name: t('category.accessories.name'),
+      description: t('category.accessories.description'),
       icon: Wrench,
       href: '/category/accessories',
       image: '/api/placeholder/300/200',
-      count: '89+ Products'
+      count: '89+ محصول'
     }
   ];
 
