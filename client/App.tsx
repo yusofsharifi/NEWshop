@@ -93,13 +93,7 @@ const App = () => (
               } />
 
               {/* Individual Product Pages */}
-              <Route path="/product/:id" element={
-                <PlaceholderPage
-                  title="Product Details"
-                  description="Detailed product information with specifications and pricing."
-                  suggestedAction="Individual product pages with full technical specifications coming soon."
-                />
-              } />
+              <Route path="/product/:id" element={<ProductDetail />} />
 
               {/* Customer Pages */}
               <Route path="/cart" element={
