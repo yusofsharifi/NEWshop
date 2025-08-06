@@ -18,8 +18,55 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { useLanguage } from '@/contexts/LanguageContext';
 
+interface Category {
+  id: number;
+  name_en: string;
+  name_fa: string;
+  description_en: string;
+  description_fa: string;
+  slug: string;
+  icon: string;
+}
+
+interface Product {
+  id: number;
+  name_en: string;
+  name_fa: string;
+  price: number;
+  original_price?: number;
+  rating: number;
+  review_count: number;
+  image_url: string;
+  is_bestseller: boolean;
+}
+
 export default function Index() {
-  const { t, dir } = useLanguage();
+  const { t, dir, language } = useLanguage();
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [bestSellers, setBestSellers] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Fetch categories
+        const categoriesResponse = await fetch('/api/categories');
+        const categoriesData = await categoriesResponse.json();
+        setCategories(categoriesData);
+
+        // Fetch best sellers
+        const productsResponse = await fetch('/api/products?bestsellers=true&limit=4');
+        const productsData = await productsResponse.json();
+        setBestSellers(productsData);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const categories = [
     {
