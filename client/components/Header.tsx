@@ -1,0 +1,177 @@
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Search, ShoppingCart, Menu, X, Phone, User } from 'lucide-react';
+import { Button } from './ui/button';
+import { Input } from './ui/input';
+
+export default function Header() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const navigation = [
+    { name: 'Products', href: '/products' },
+    { name: 'Pumps', href: '/category/pumps' },
+    { name: 'Filters', href: '/category/filters' },
+    { name: 'Heaters', href: '/category/heaters' },
+    { name: 'Chemicals', href: '/category/chemicals' },
+    { name: 'Accessories', href: '/category/accessories' },
+    { name: 'Blog', href: '/blog' },
+    { name: 'Contact', href: '/contact' },
+  ];
+
+  return (
+    <header className="bg-white shadow-lg border-b border-gray-100 sticky top-0 z-50">
+      {/* Top bar */}
+      <div className="bg-navy-900 text-white py-2">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center text-sm">
+            <div className="flex items-center space-x-6">
+              <span className="flex items-center">
+                <Phone className="w-4 h-4 mr-2" />
+                1-800-POOL-PRO
+              </span>
+              <span>Free shipping on orders over $500</span>
+            </div>
+            <div className="flex items-center space-x-4">
+              <Link to="/account" className="hover:text-blue-300 transition-colors">
+                My Account
+              </Link>
+              <Link to="/track-order" className="hover:text-blue-300 transition-colors">
+                Track Order
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Main header */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center py-4">
+          {/* Logo */}
+          <Link to="/" className="flex items-center">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
+                <div className="w-6 h-6 bg-white rounded-full opacity-90"></div>
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-navy-900">AquaPro</h1>
+                <p className="text-sm text-gray-600">Pool Equipment Experts</p>
+              </div>
+            </div>
+          </Link>
+
+          {/* Desktop Navigation */}
+          <nav className="hidden lg:flex items-center space-x-8">
+            {navigation.slice(0, 6).map((item) => (
+              <Link
+                key={item.name}
+                to={item.href}
+                className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
+              >
+                {item.name}
+              </Link>
+            ))}
+          </nav>
+
+          {/* Search Bar */}
+          <div className="hidden md:flex items-center flex-1 max-w-md mx-8">
+            <div className="relative w-full">
+              <Input
+                type="text"
+                placeholder="Search pool equipment..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+            </div>
+          </div>
+
+          {/* Right side actions */}
+          <div className="flex items-center space-x-4">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="hidden md:flex items-center space-x-2 text-gray-700 hover:text-blue-600"
+            >
+              <User className="w-5 h-5" />
+              <span>Login</span>
+            </Button>
+
+            <Link to="/cart" className="relative">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="flex items-center space-x-2 text-gray-700 hover:text-blue-600"
+              >
+                <ShoppingCart className="w-5 h-5" />
+                <span className="hidden sm:inline">Cart</span>
+                <span className="absolute -top-2 -right-2 bg-blue-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                  0
+                </span>
+              </Button>
+            </Link>
+
+            {/* Mobile menu button */}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="lg:hidden"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
+              {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </Button>
+          </div>
+        </div>
+
+        {/* Mobile Search */}
+        <div className="md:hidden pb-4">
+          <div className="relative">
+            <Input
+              type="text"
+              placeholder="Search pool equipment..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Navigation */}
+      {isMenuOpen && (
+        <div className="lg:hidden bg-white border-t border-gray-200">
+          <nav className="px-4 py-4 space-y-3">
+            {navigation.map((item) => (
+              <Link
+                key={item.name}
+                to={item.href}
+                className="block py-2 text-gray-700 hover:text-blue-600 font-medium transition-colors"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                {item.name}
+              </Link>
+            ))}
+            <div className="pt-3 border-t border-gray-200">
+              <Link
+                to="/account"
+                className="block py-2 text-gray-700 hover:text-blue-600 font-medium transition-colors"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                My Account
+              </Link>
+              <Link
+                to="/track-order"
+                className="block py-2 text-gray-700 hover:text-blue-600 font-medium transition-colors"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Track Order
+              </Link>
+            </div>
+          </nav>
+        </div>
+      )}
+    </header>
+  );
+}
