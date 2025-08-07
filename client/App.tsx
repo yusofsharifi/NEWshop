@@ -58,6 +58,7 @@ const App = () => (
               <HeaderNew />
               <CartDrawer />
               <WhatsAppWidget />
+              <LiveChat />
               <main className="flex-1">
             <Routes>
               <Route path="/" element={<Index />} />
