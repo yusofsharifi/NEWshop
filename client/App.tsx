@@ -24,6 +24,7 @@ import SearchAdvanced from "./pages/SearchAdvanced";
 import ProductComparison from "./pages/ProductComparison";
 import Blog from "./pages/Blog";
 import Consultation from "./pages/Consultation";
+import FAQ from "./pages/FAQ";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import UserDashboard from "./pages/UserDashboard";
