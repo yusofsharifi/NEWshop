@@ -127,13 +127,8 @@ const App = () => (
                 </ProtectedRoute>
               } />
 
-              <Route path="/track-order" element={
-                <PlaceholderPage
-                  title="Track Your Order"
-                  description="Real-time tracking information for your pool equipment orders."
-                  suggestedAction="Enter your order number to get real-time shipping updates."
-                />
-              } />
+              <Route path="/track-order" element={<OrderTracking />} />
+              <Route path="/track-order/:orderId" element={<OrderTracking />} />
 
               {/* Content Pages */}
               <Route path="/blog" element={
