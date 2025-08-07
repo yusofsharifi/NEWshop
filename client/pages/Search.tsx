@@ -22,6 +22,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useSearch } from '@/hooks/useSearch';
 import { useLanguage } from '@/contexts/LanguageContext';
+import AdvancedFilters from '@/components/AdvancedFilters';
 import { useCart } from '@/contexts/CartContext';
 import { motion, AnimatePresence } from 'framer-motion';
 
