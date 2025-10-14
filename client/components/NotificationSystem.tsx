@@ -1,4 +1,3 @@
-import { useState, useEffect, createContext, useContext } from 'react';
 import { 
   Bell, X, Check, AlertCircle, Info, ShoppingBag, 
   Package, Truck, Gift, Star, MessageCircle, Settings,
