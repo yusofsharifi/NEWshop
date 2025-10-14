@@ -9,7 +9,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useCart } from '@/contexts/CartContext';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -87,7 +86,7 @@ export default function ProductComparison() {
     {
       id: 1,
       name_en: "Pentair SuperFlow Pool Pump",
-      name_fa: "پمپ استخر پنتایر سوپرفلو",
+      name_fa: "پمپ استخر پنتایر ��وپرفلو",
       description_en: "High-performance variable speed pool pump",
       description_fa: "پمپ استخر با سرعت متغیر و عملکرد بالا",
       price: 2500000,
@@ -152,7 +151,7 @@ export default function ProductComparison() {
       specifications: {},
       features: ["Variable Speed", "Quiet Operation", "Energy Star Rated"],
       pros: ["عملکرد آرام", "راندمان بالا", "طراحی مدرن"],
-      cons: ["کمی گران‌تر از رقبا", "دردسترس نبودن قطعات"],
+      cons: ["کمی گران‌��ر از رقبا", "دردسترس نبودن قطعات"],
       warranty: "3 سال",
       power: "1.2 HP",
       dimensions: "29 × 24 × 39 سانتی‌متر",
