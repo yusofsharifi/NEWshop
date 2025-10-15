@@ -17,6 +17,7 @@ import { Input } from '@/components/ui/input';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { motion, AnimatePresence } from 'framer-motion';
+import { formatCurrencyIRR } from '@/lib/utils';
 
 interface Order {
   id: string;
@@ -110,9 +111,7 @@ export default function UserDashboard() {
     return statusTexts[language][status as keyof typeof statusTexts.fa] || status;
   };
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('fa-IR').format(price) + ' تومان';
-  };
+  const formatPrice = (price: number) => formatCurrencyIRR(price);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -531,7 +530,7 @@ export default function UserDashboard() {
                     </CardHeader>
                     <CardContent className="space-y-4">
                       <div className="flex items-center justify-between">
-                        <span>{language === 'fa' ? 'اطلاع‌رسانی ایمیل' : 'Email Notifications'}</span>
+                        <span>{language === 'fa' ? 'اطلاع‌رسانی ای��یل' : 'Email Notifications'}</span>
                         <Switch />
                       </div>
                       <div className="flex items-center justify-between">
