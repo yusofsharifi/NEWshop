@@ -77,8 +77,8 @@ export default function AdminDashboard() {
 
   const kpis = [
     {
-      title: language === 'fa' ? 'درآم�� (۸ هفته)' : 'Revenue (8w)',
-      value: loading ? '...' : `₮${stats.revenue.toLocaleString()}`,
+      title: language === 'fa' ? 'درآمد (۸ هفته)' : 'Revenue (8w)',
+      value: loading ? '...' : formatCurrencyIRR(stats.revenue),
       icon: DollarSign,
       delta: '+12%'
     },
@@ -138,7 +138,7 @@ export default function AdminDashboard() {
             </CardHeader>
             <CardContent>
               <div className="h-72">
-                <ChartContainer config={{ revenue: { label: language === 'fa' ? 'درآ��د' : 'Revenue', color: '#2563eb' }, orders: { label: language === 'fa' ? 'سفارش' : 'Orders', color: '#16a34a' } }}>
+                <ChartContainer config={{ revenue: { label: language === 'fa' ? 'درآمد' : 'Revenue', color: '#2563eb' }, orders: { label: language === 'fa' ? 'سفارش' : 'Orders', color: '#16a34a' } }}>
                   <LineChart data={salesData} margin={{ left: 12, right: 12, bottom: 8 }}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="label" />
