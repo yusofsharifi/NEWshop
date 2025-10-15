@@ -90,7 +90,7 @@ export default function AdminDashboard() {
     },
     {
       title: language === 'fa' ? 'میانگین سبد' : 'AOV',
-      value: loading ? '...' : `₮${stats.aov.toLocaleString()}`,
+      value: loading ? '...' : formatCurrencyIRR(stats.aov),
       icon: BarChart3,
       delta: '+3%'
     },
@@ -242,7 +242,7 @@ export default function AdminDashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <Card>
             <CardHeader>
-              <CardTitle>{language === 'fa' ? 'سفارش‌ها به تفکیک هفته' : 'Orders by Week'}</CardTitle>
+              <CardTitle>{language === 'fa' ? 'سفارش��ها به تفکیک هفته' : 'Orders by Week'}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="h-64">
