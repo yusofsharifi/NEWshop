@@ -16,6 +16,7 @@ import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { motion, AnimatePresence } from 'framer-motion';
+import { formatCurrencyIRR } from '@/lib/utils';
 
 interface FilterOption {
   id: string;
@@ -88,7 +89,7 @@ export default function AdvancedFilters({ onFiltersChange, totalResults, isLoadi
         { id: 'self_priming', label: language === 'fa' ? 'خودمکش' : 'Self-Priming', count: 22, checked: false },
         { id: 'corrosion_resistant', label: language === 'fa' ? 'ضد خوردگی' : 'Corrosion Resistant', count: 28, checked: false },
         { id: 'digital_display', label: language === 'fa' ? 'نمایشگر دیجیتال' : 'Digital Display', count: 12, checked: false },
-        { id: 'remote_control', label: language === 'fa' ? 'کنترل از راه دور' : 'Remote Control', count: 15, checked: false }
+        { id: 'remote_control', label: language === 'fa' ? 'ک��ترل از راه دور' : 'Remote Control', count: 15, checked: false }
       ]
     },
     {
