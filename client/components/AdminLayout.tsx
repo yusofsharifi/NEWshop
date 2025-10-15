@@ -39,6 +39,12 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       icon: BarChart3
     },
     {
+      name_en: 'Inventory',
+      name_fa: 'انبار',
+      href: '/admin/inventory',
+      icon: Package
+    },
+    {
       name_en: 'Products',
       name_fa: 'محصولات',
       href: '/admin/products',
@@ -66,6 +72,12 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       name_en: 'Menu Management',
       name_fa: 'مدیریت منو',
       href: '/admin/menus',
+      icon: Settings
+    },
+    {
+      name_en: 'SEO',
+      name_fa: 'سئو',
+      href: '/admin/seo',
       icon: Settings
     },
     {

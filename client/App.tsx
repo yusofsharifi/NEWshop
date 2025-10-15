@@ -39,6 +39,8 @@ import AdminOrders from "./pages/admin/Orders";
 import AdminCategories from "./pages/admin/Categories";
 import AdminCustomers from "./pages/admin/Customers";
 import AdminSettings from "./pages/admin/Settings";
+import AdminInventory from "./pages/admin/Inventory";
+import AdminSEO from "./pages/admin/SEO";
 import ProductForm from "./pages/admin/ProductForm";
 import MenuManagement from "./pages/admin/MenuManagement";
 
@@ -251,6 +253,16 @@ const App = () => (
               <Route path="/admin/menus" element={
                 <ProtectedRoute requireAdmin>
                   <MenuManagement />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/inventory" element={
+                <ProtectedRoute requireAdmin>
+                  <AdminInventory />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/seo" element={
+                <ProtectedRoute requireAdmin>
+                  <AdminSEO />
                 </ProtectedRoute>
               } />
               <Route path="/admin/settings" element={
