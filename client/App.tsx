@@ -44,6 +44,9 @@ import AdminSEO from "./pages/admin/SEO";
 import AdminAccounting from "./pages/admin/Accounting";
 import AdminJournalEntries from "./pages/admin/JournalEntries";
 import AdminFinancialReports from "./pages/admin/FinancialReports";
+import AdminAccountsReceivable from "./pages/admin/AccountsReceivable";
+import AdminAccountsPayable from "./pages/admin/AccountsPayable";
+import AdminBankReconciliation from "./pages/admin/BankReconciliation";
 import ProductForm from "./pages/admin/ProductForm";
 import MenuManagement from "./pages/admin/MenuManagement";
 
