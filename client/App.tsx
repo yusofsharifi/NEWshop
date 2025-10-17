@@ -268,6 +268,21 @@ const App = () => (
                   <AdminSEO />
                 </ProtectedRoute>
               } />
+              <Route path="/admin/accounting" element={
+                <ProtectedRoute requireAdmin>
+                  <AdminAccounting />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/journal-entries" element={
+                <ProtectedRoute requireAdmin>
+                  <AdminJournalEntries />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/financial-reports" element={
+                <ProtectedRoute requireAdmin>
+                  <AdminFinancialReports />
+                </ProtectedRoute>
+              } />
               <Route path="/admin/settings" element={
                 <ProtectedRoute requireAdmin>
                   <AdminSettings />
