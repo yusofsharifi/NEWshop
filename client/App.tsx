@@ -286,6 +286,21 @@ const App = () => (
                   <AdminFinancialReports />
                 </ProtectedRoute>
               } />
+              <Route path="/admin/accounts-receivable" element={
+                <ProtectedRoute requireAdmin>
+                  <AdminAccountsReceivable />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/accounts-payable" element={
+                <ProtectedRoute requireAdmin>
+                  <AdminAccountsPayable />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/bank-reconciliation" element={
+                <ProtectedRoute requireAdmin>
+                  <AdminBankReconciliation />
+                </ProtectedRoute>
+              } />
               <Route path="/admin/settings" element={
                 <ProtectedRoute requireAdmin>
                   <AdminSettings />
