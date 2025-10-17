@@ -41,6 +41,9 @@ import AdminCustomers from "./pages/admin/Customers";
 import AdminSettings from "./pages/admin/Settings";
 import AdminInventory from "./pages/admin/Inventory";
 import AdminSEO from "./pages/admin/SEO";
+import AdminAccounting from "./pages/admin/Accounting";
+import AdminJournalEntries from "./pages/admin/JournalEntries";
+import AdminFinancialReports from "./pages/admin/FinancialReports";
 import ProductForm from "./pages/admin/ProductForm";
 import MenuManagement from "./pages/admin/MenuManagement";
 
