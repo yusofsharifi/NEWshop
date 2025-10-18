@@ -47,6 +47,9 @@ import AdminFinancialReports from "./pages/admin/FinancialReports";
 import AdminAccountsReceivable from "./pages/admin/AccountsReceivable";
 import AdminAccountsPayable from "./pages/admin/AccountsPayable";
 import AdminBankReconciliation from "./pages/admin/BankReconciliation";
+import AdminHRManagement from "./pages/admin/HRManagement";
+import AdminSalesAndCRM from "./pages/admin/SalesAndCRM";
+import AdminProcurement from "./pages/admin/Procurement";
 import ProductForm from "./pages/admin/ProductForm";
 import MenuManagement from "./pages/admin/MenuManagement";
 
