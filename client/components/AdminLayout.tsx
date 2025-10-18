@@ -99,6 +99,24 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       icon: BarChart3
     },
     {
+      name_en: 'HR Management',
+      name_fa: 'منابع انسانی',
+      href: '/admin/hr-management',
+      icon: Settings
+    },
+    {
+      name_en: 'Sales & CRM',
+      name_fa: 'فروش و CRM',
+      href: '/admin/sales-crm',
+      icon: BarChart3
+    },
+    {
+      name_en: 'Procurement',
+      name_fa: 'خریدو تدارکات',
+      href: '/admin/procurement',
+      icon: Settings
+    },
+    {
       name_en: 'Settings',
       name_fa: 'تنظیمات',
       href: '/admin/settings',
