@@ -304,6 +304,21 @@ const App = () => (
                   <AdminBankReconciliation />
                 </ProtectedRoute>
               } />
+              <Route path="/admin/hr-management" element={
+                <ProtectedRoute requireAdmin>
+                  <AdminHRManagement />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/sales-crm" element={
+                <ProtectedRoute requireAdmin>
+                  <AdminSalesAndCRM />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/procurement" element={
+                <ProtectedRoute requireAdmin>
+                  <AdminProcurement />
+                </ProtectedRoute>
+              } />
               <Route path="/admin/settings" element={
                 <ProtectedRoute requireAdmin>
                   <AdminSettings />
