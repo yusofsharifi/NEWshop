@@ -181,7 +181,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           <div className="space-y-2">
             {navigation.map((item) => (
               <Link
-                key={item.name}
+                key={item.href}
                 to={item.href}
                 className={`group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors ${
                   isCurrentPath(item.href)
