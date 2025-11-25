@@ -276,14 +276,14 @@ export default function AdminInventory() {
   }, [items]);
 
   const calculateKPIs = () => {
-    const totalValue = items.reduce((sum, it) => sum + totalValue(it), 0);
+    const inventoryValue = items.reduce((sum, it) => sum + totalValue(it), 0);
     const totalCost = items.reduce((sum, it) => sum + ((it.unit_cost || 0) * it.stock), 0);
     const totalSold = movements.filter(m => m.type === 'out').reduce((sum, m) => sum + Math.abs(m.quantity), 0);
     const avgStock = items.reduce((sum, it) => sum + it.stock, 0) / items.length;
     const turnoverRatio = totalSold > 0 ? (totalSold / avgStock).toFixed(2) : '0';
     const defectRate = items.reduce((sum, it) => sum + (it.defect_rate || 0), 0) / items.length;
-    
-    return { totalValue, totalCost, totalSold, avgStock, turnoverRatio, defectRate: defectRate.toFixed(2) };
+
+    return { totalValue: inventoryValue, totalCost, totalSold, avgStock, turnoverRatio, defectRate: defectRate.toFixed(2) };
   };
 
   const handleQC = () => {
