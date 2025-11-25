@@ -75,6 +75,12 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       icon: Settings,
     },
     {
+      name_en: "Store Pages",
+      name_fa: "صفحات فروشگاه",
+      href: "/admin/store-pages",
+      icon: BarChart3,
+    },
+    {
       name_en: "SEO",
       name_fa: "سئو",
       href: "/admin/seo",
