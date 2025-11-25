@@ -429,6 +429,14 @@ const App = () => (
                         }
                       />
                       <Route
+                        path="/admin/store-pages"
+                        element={
+                          <ProtectedRoute requireAdmin>
+                            <AdminStorePages />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
                         path="/admin/settings"
                         element={
                           <ProtectedRoute requireAdmin>
