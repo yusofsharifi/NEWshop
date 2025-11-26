@@ -210,7 +210,7 @@ export default function AdminSettings() {
           transition={{ delay: 0.1 }}
         >
           <Tabs defaultValue="general" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-2 lg:grid-cols-5">
+            <TabsList className="grid w-full grid-cols-2 lg:grid-cols-7 overflow-x-auto">
               <TabsTrigger value="general">
                 <Globe className="w-4 h-4 mr-2" />
                 {language === 'fa' ? 'عمومی' : 'General'}
@@ -222,6 +222,14 @@ export default function AdminSettings() {
               <TabsTrigger value="notifications">
                 <Bell className="w-4 h-4 mr-2" />
                 {language === 'fa' ? 'اعلانات' : 'Notifications'}
+              </TabsTrigger>
+              <TabsTrigger value="payment">
+                <CreditCard className="w-4 h-4 mr-2" />
+                {language === 'fa' ? 'پرداخت' : 'Payment'}
+              </TabsTrigger>
+              <TabsTrigger value="crm">
+                <MessageSquare className="w-4 h-4 mr-2" />
+                {language === 'fa' ? 'CRM' : 'CRM'}
               </TabsTrigger>
               <TabsTrigger value="features">
                 <Palette className="w-4 h-4 mr-2" />
@@ -397,7 +405,7 @@ export default function AdminSettings() {
                       <div>
                         <Label>{language === 'fa' ? 'هشدارهای موجودی' : 'Inventory Alerts'}</Label>
                         <p className="text-sm text-gray-500">
-                          {language === 'fa' ? 'هشدار زمانی که موجودی کم می‌شود' : 'Get alerts when inventory is low'}
+                          {language === 'fa' ? '��شدار زمانی که موجودی کم می‌شود' : 'Get alerts when inventory is low'}
                         </p>
                       </div>
                       <Switch 
