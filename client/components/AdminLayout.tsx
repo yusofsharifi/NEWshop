@@ -34,102 +34,188 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     navigate("/login");
   };
 
-  const navigation = [
+  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
+    inventory: true,
+    sales: true,
+    finance: true,
+  });
+
+  const toggleSection = (section: string) => {
+    setExpandedSections((prev) => ({
+      ...prev,
+      [section]: !prev[section],
+    }));
+  };
+
+  interface MenuItem {
+    name_en: string;
+    name_fa: string;
+    href: string;
+    icon: React.ComponentType<{ className?: string }>;
+  }
+
+  interface MenuSection {
+    id: string;
+    name_en: string;
+    name_fa: string;
+    icon: React.ComponentType<{ className?: string }>;
+    items: MenuItem[];
+  }
+
+  const navigationSections: MenuSection[] = [
     {
-      name_en: "Dashboard",
-      name_fa: "داشبورد",
-      href: "/admin",
+      id: "main",
+      name_en: "Main",
+      name_fa: "اصلی",
       icon: BarChart3,
+      items: [
+        {
+          name_en: "Dashboard",
+          name_fa: "داشبورد",
+          href: "/admin",
+          icon: BarChart3,
+        },
+      ],
     },
     {
-      name_en: "Inventory",
-      name_fa: "انبار",
-      href: "/admin/inventory",
-      icon: Package,
+      id: "inventory",
+      name_en: "Inventory & Products",
+      name_fa: "انبار و محصولات",
+      icon: Warehouse,
+      items: [
+        {
+          name_en: "Inventory",
+          name_fa: "انبار",
+          href: "/admin/inventory",
+          icon: Package,
+        },
+        {
+          name_en: "Products",
+          name_fa: "محصولات",
+          href: "/admin/products",
+          icon: Package,
+        },
+        {
+          name_en: "Categories",
+          name_fa: "دسته‌بندی‌ها",
+          href: "/admin/categories",
+          icon: Package,
+        },
+        {
+          name_en: "Procurement",
+          name_fa: "خرید و تدارکات",
+          href: "/admin/procurement",
+          icon: Package,
+        },
+      ],
     },
     {
-      name_en: "Products",
-      name_fa: "محصولات",
-      href: "/admin/products",
-      icon: Package,
-    },
-    {
-      name_en: "Orders",
-      name_fa: "سفارشات",
-      href: "/admin/orders",
+      id: "sales",
+      name_en: "Sales & Customers",
+      name_fa: "فروش و مشتریان",
       icon: ShoppingCart,
+      items: [
+        {
+          name_en: "Orders",
+          name_fa: "سفارشات",
+          href: "/admin/orders",
+          icon: ShoppingCart,
+        },
+        {
+          name_en: "Customers",
+          name_fa: "مشتریان",
+          href: "/admin/customers",
+          icon: Users,
+        },
+        {
+          name_en: "Sales & CRM",
+          name_fa: "فروش و CRM",
+          href: "/admin/sales-crm",
+          icon: BarChart3,
+        },
+      ],
     },
     {
-      name_en: "Categories",
-      name_fa: "دسته‌بندی‌ها",
-      href: "/admin/categories",
-      icon: Package,
+      id: "finance",
+      name_en: "Finance & Accounting",
+      name_fa: "مالی و حسابداری",
+      icon: DollarSign,
+      items: [
+        {
+          name_en: "Accounting",
+          name_fa: "حسابداری",
+          href: "/admin/accounting",
+          icon: BarChart3,
+        },
+        {
+          name_en: "Journal Entries",
+          name_fa: "دفاتر روزنامه",
+          href: "/admin/journal-entries",
+          icon: Settings,
+        },
+        {
+          name_en: "Accounts Receivable",
+          name_fa: "حساب‌های دریافتی",
+          href: "/admin/accounts-receivable",
+          icon: BarChart3,
+        },
+        {
+          name_en: "Accounts Payable",
+          name_fa: "حساب‌های پرداختی",
+          href: "/admin/accounts-payable",
+          icon: BarChart3,
+        },
+        {
+          name_en: "Bank Reconciliation",
+          name_fa: "تطبیق بانکی",
+          href: "/admin/bank-reconciliation",
+          icon: BarChart3,
+        },
+        {
+          name_en: "Financial Reports",
+          name_fa: "گزارشات مالی",
+          href: "/admin/financial-reports",
+          icon: BarChart3,
+        },
+      ],
     },
     {
-      name_en: "Customers",
-      name_fa: "مشتریان",
-      href: "/admin/customers",
-      icon: Users,
-    },
-    {
-      name_en: "Menu Management",
-      name_fa: "مدیریت منو",
-      href: "/admin/menus",
+      id: "settings",
+      name_en: "Settings & Other",
+      name_fa: "تنظیمات و سایر",
       icon: Settings,
-    },
-    {
-      name_en: "Store Pages",
-      name_fa: "صفحات فروشگاه",
-      href: "/admin/store-pages",
-      icon: BarChart3,
-    },
-    {
-      name_en: "SEO",
-      name_fa: "سئو",
-      href: "/admin/seo",
-      icon: Settings,
-    },
-    {
-      name_en: "Accounting",
-      name_fa: "حسابداری",
-      href: "/admin/accounting",
-      icon: BarChart3,
-    },
-    {
-      name_en: "Journal Entries",
-      name_fa: "دفاتر روزنامه",
-      href: "/admin/journal-entries",
-      icon: Settings,
-    },
-    {
-      name_en: "Financial Reports",
-      name_fa: "گزارشات مالی",
-      href: "/admin/financial-reports",
-      icon: BarChart3,
-    },
-    {
-      name_en: "HR Management",
-      name_fa: "منابع انسانی",
-      href: "/admin/hr-management",
-      icon: Settings,
-    },
-    {
-      name_en: "Sales & CRM",
-      name_fa: "فروش و CRM",
-      href: "/admin/sales-crm",
-      icon: BarChart3,
-    },
-    {
-      name_en: "Procurement",
-      name_fa: "خریدو تدارکات",
-      href: "/admin/procurement",
-      icon: Settings,
-    },
-    {
-      name_en: "Settings",
-      name_fa: "تنظیمات",
-      href: "/admin/settings",
-      icon: Settings,
+      items: [
+        {
+          name_en: "HR Management",
+          name_fa: "منابع انسانی",
+          href: "/admin/hr-management",
+          icon: Users,
+        },
+        {
+          name_en: "Menu Management",
+          name_fa: "مدیریت منو",
+          href: "/admin/menus",
+          icon: Settings,
+        },
+        {
+          name_en: "Store Pages",
+          name_fa: "صفحات فروشگاه",
+          href: "/admin/store-pages",
+          icon: BarChart3,
+        },
+        {
+          name_en: "SEO",
+          name_fa: "سئو",
+          href: "/admin/seo",
+          icon: Settings,
+        },
+        {
+          name_en: "Settings",
+          name_fa: "تنظیمات",
+          href: "/admin/settings",
+          icon: Settings,
+        },
+      ],
     },
   ];
 
