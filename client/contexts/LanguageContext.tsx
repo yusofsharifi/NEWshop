@@ -107,7 +107,7 @@ const faTranslations = {
   'header.freeShipping': 'ارسال رایگان برای سفارشات بالای ۵۰۰ دلار',
   'header.myAccount': 'حساب کاربری',
   'header.trackOrder': 'پیگیری سفارش',
-  'header.search': 'جستجوی تجهیزات استخر...',
+  'header.search': 'جستجوی ��جهیزات استخر...',
   'header.login': 'ورود',
   'header.cart': 'سبد خرید',
   
@@ -132,7 +132,7 @@ const faTranslations = {
   'feature.quality.title': 'کیفیت حرفه‌ای',
   'feature.quality.description': 'فقط بالاترین کیفیت تجهیزات از تولیدکنندگان معتبر',
   'feature.shipping.title': 'ارسال رایگان',
-  'feature.shipping.description': 'ارسال رایگان برای تمام سفارشات بالای ۵۰۰ دلار - تحویل سراسری',
+  'feature.shipping.description': 'ارسال رایگان برای تمام سفارشات بالای ۵۰۰ دلار - تحو��ل سراسری',
   'feature.support.title': 'پشتیبانی متخصص',
   'feature.support.description': 'پشتیبانی فنی ۲۴/۷ از متخصصان دارای گواهینامه استخر',
   
@@ -187,6 +187,35 @@ const faTranslations = {
   'common.delete': 'حذف',
   'common.add': 'افزودن',
   'common.view': 'مشاهده',
+
+  // Admin Menu
+  'admin.dashboard': 'داشبورد',
+  'admin.inventory': 'انبار',
+  'admin.products': 'محصولات',
+  'admin.orders': 'سفارشات',
+  'admin.categories': 'دسته‌بندی‌ها',
+  'admin.customers': 'مشتریان',
+  'admin.menuManagement': 'مدیریت منو',
+  'admin.storePages': 'صفحات فروشگاه',
+  'admin.seo': 'سئو',
+  'admin.accounting': 'حسابداری',
+  'admin.journalEntries': 'دفاتر روزنامه',
+  'admin.financialReports': 'گزارشات مالی',
+  'admin.accountsReceivable': 'حساب‌های دریافتی',
+  'admin.accountsPayable': 'حساب‌های پرداختی',
+  'admin.bankReconciliation': 'تطبیق بانکی',
+  'admin.hrManagement': 'منابع انسانی',
+  'admin.salesCRM': 'فروش و CRM',
+  'admin.procurement': 'خرید و تدارکات',
+  'admin.settings': 'تنظیمات',
+  'admin.backToWebsite': 'بازگشت به سایت',
+  'admin.logout': 'خروج',
+
+  // Admin Section Headers
+  'admin.section.inventory': 'انبار و محصولات',
+  'admin.section.sales': 'فروش و مشتریان',
+  'admin.section.finance': 'مالی و حسابداری',
+  'admin.section.settings': 'تنظیمات و سایر',
 };
 
 const translations = {
