@@ -340,7 +340,7 @@ export default function AdminSettings() {
                       />
                     </div>
                     <div>
-                      <Label htmlFor="shippingRate">{language === 'fa' ? 'هزینه ارسال ($)' : 'Shipping Rate ($)'}</Label>
+                      <Label htmlFor="shippingRate">{language === 'fa' ? 'هزینه ا��سال ($)' : 'Shipping Rate ($)'}</Label>
                       <Input
                         id="shippingRate"
                         type="number"
@@ -405,7 +405,7 @@ export default function AdminSettings() {
                       <div>
                         <Label>{language === 'fa' ? 'هشدارهای موجودی' : 'Inventory Alerts'}</Label>
                         <p className="text-sm text-gray-500">
-                          {language === 'fa' ? '��شدار زمانی که موجودی کم می‌شود' : 'Get alerts when inventory is low'}
+                          {language === 'fa' ? 'هشدار زمانی که موجودی کم می‌شود' : 'Get alerts when inventory is low'}
                         </p>
                       </div>
                       <Switch 
@@ -418,7 +418,7 @@ export default function AdminSettings() {
                       <div>
                         <Label>{language === 'fa' ? 'ایمیل مارکتینگ' : 'Email Marketing'}</Label>
                         <p className="text-sm text-gray-500">
-                          {language === 'fa' ? 'ارسال ایمیل‌های تبلیغاتی به مشتریان' : 'Send promotional emails to customers'}
+                          {language === 'fa' ? 'ارسال ایمیل‌های تبلیغاتی به مشتری��ن' : 'Send promotional emails to customers'}
                         </p>
                       </div>
                       <Switch 
@@ -439,6 +439,320 @@ export default function AdminSettings() {
                         onCheckedChange={(checked) => updateSetting('enableSms', checked)}
                       />
                     </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* Payment Gateway Settings */}
+            <TabsContent value="payment">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center">
+                    <CreditCard className="w-5 h-5 mr-2" />
+                    {language === 'fa' ? 'درگاه‌های پرداخت' : 'Payment Gateways'}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  {paymentGateways.map((gateway) => (
+                    <div key={gateway.id} className="border rounded-lg p-4 space-y-4">
+                      <div className="flex items-center justify-between">
+                        <h4 className="font-medium text-lg">{gateway.name}</h4>
+                        <div className="flex items-center gap-2">
+                          <Switch
+                            checked={gateway.isActive}
+                            onCheckedChange={() => toggleGatewayStatus(gateway.id)}
+                          />
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => deleteGateway(gateway.id)}
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {Object.entries(gateway.credentials).map(([key, value]) => (
+                          <div key={key}>
+                            <Label htmlFor={`${gateway.id}-${key}`}>
+                              {key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')}
+                            </Label>
+                            <div className="relative">
+                              <Input
+                                id={`${gateway.id}-${key}`}
+                                type={showPasswords[`${gateway.id}-${key}`] ? 'text' : 'password'}
+                                value={value || ''}
+                                onChange={(e) =>
+                                  updateGatewayCredential(gateway.id, key, e.target.value)
+                                }
+                                placeholder={`Enter ${key}`}
+                              />
+                              <button
+                                onClick={() =>
+                                  setShowPasswords((prev) => ({
+                                    ...prev,
+                                    [`${gateway.id}-${key}`]:
+                                      !prev[`${gateway.id}-${key}`],
+                                  }))
+                                }
+                                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                              >
+                                {showPasswords[`${gateway.id}-${key}`] ? (
+                                  <EyeOff className="w-4 h-4" />
+                                ) : (
+                                  <Eye className="w-4 h-4" />
+                                )}
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+
+                  <Button className="w-full" onClick={() => setNewGateway({})}>
+                    <Plus className="w-4 h-4 mr-2" />
+                    {language === 'fa' ? 'افزودن درگاه جدید' : 'Add New Gateway'}
+                  </Button>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* CRM Communication Settings */}
+            <TabsContent value="crm">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center">
+                    <MessageSquare className="w-5 h-5 mr-2" />
+                    {language === 'fa' ? 'تنظیمات ارتباطات CRM' : 'CRM Communication Settings'}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  {/* SMS Settings */}
+                  <div className="border-b pb-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <h4 className="font-semibold text-lg">
+                        {language === 'fa' ? 'پیامک (SMS)' : 'SMS'}
+                      </h4>
+                      <Switch
+                        checked={crmSettings.enableSMS}
+                        onCheckedChange={(checked) =>
+                          updateCrmSetting('enableSMS', checked)
+                        }
+                      />
+                    </div>
+
+                    {crmSettings.enableSMS && (
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label htmlFor="smsProvider">
+                            {language === 'fa' ? 'فراهم‌کننده' : 'Provider'}
+                          </Label>
+                          <Select
+                            value={crmSettings.smsProvider}
+                            onValueChange={(value) =>
+                              updateCrmSetting('smsProvider', value)
+                            }
+                          >
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="twilio">Twilio</SelectItem>
+                              <SelectItem value="kavenegar">Kavenegar</SelectItem>
+                              <SelectItem value="faraz">Faraz</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div>
+                          <Label htmlFor="smsApiKey">
+                            {language === 'fa' ? 'کلید API' : 'API Key'}
+                          </Label>
+                          <div className="relative">
+                            <Input
+                              id="smsApiKey"
+                              type={showPasswords['smsApiKey'] ? 'text' : 'password'}
+                              value={crmSettings.smsApiKey}
+                              onChange={(e) =>
+                                updateCrmSetting('smsApiKey', e.target.value)
+                              }
+                              placeholder="Enter API Key"
+                            />
+                            <button
+                              onClick={() =>
+                                setShowPasswords((prev) => ({
+                                  ...prev,
+                                  smsApiKey: !prev.smsApiKey,
+                                }))
+                              }
+                              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                            >
+                              {showPasswords['smsApiKey'] ? (
+                                <EyeOff className="w-4 h-4" />
+                              ) : (
+                                <Eye className="w-4 h-4" />
+                              )}
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* WhatsApp Settings */}
+                  <div className="border-b pb-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <h4 className="font-semibold text-lg">WhatsApp</h4>
+                      <Switch
+                        checked={crmSettings.enableWhatsApp}
+                        onCheckedChange={(checked) =>
+                          updateCrmSetting('enableWhatsApp', checked)
+                        }
+                      />
+                    </div>
+
+                    {crmSettings.enableWhatsApp && (
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label htmlFor="whatsappProvider">
+                            {language === 'fa' ? 'فراهم‌کننده' : 'Provider'}
+                          </Label>
+                          <Select
+                            value={crmSettings.whatsAppProvider}
+                            onValueChange={(value) =>
+                              updateCrmSetting('whatsAppProvider', value)
+                            }
+                          >
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="twilio">Twilio</SelectItem>
+                              <SelectItem value="messagebird">MessageBird</SelectItem>
+                              <SelectItem value="gupshup">Gupshup</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div>
+                          <Label htmlFor="whatsappApiKey">
+                            {language === 'fa' ? 'کلید API' : 'API Key'}
+                          </Label>
+                          <div className="relative">
+                            <Input
+                              id="whatsappApiKey"
+                              type={showPasswords['whatsappApiKey'] ? 'text' : 'password'}
+                              value={crmSettings.whatsAppApiKey}
+                              onChange={(e) =>
+                                updateCrmSetting('whatsAppApiKey', e.target.value)
+                              }
+                              placeholder="Enter API Key"
+                            />
+                            <button
+                              onClick={() =>
+                                setShowPasswords((prev) => ({
+                                  ...prev,
+                                  whatsappApiKey: !prev.whatsappApiKey,
+                                }))
+                              }
+                              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                            >
+                              {showPasswords['whatsappApiKey'] ? (
+                                <EyeOff className="w-4 h-4" />
+                              ) : (
+                                <Eye className="w-4 h-4" />
+                              )}
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Telegram Settings */}
+                  <div className="border-b pb-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <h4 className="font-semibold text-lg">Telegram</h4>
+                      <Switch
+                        checked={crmSettings.enableTelegram}
+                        onCheckedChange={(checked) =>
+                          updateCrmSetting('enableTelegram', checked)
+                        }
+                      />
+                    </div>
+
+                    {crmSettings.enableTelegram && (
+                      <div>
+                        <Label htmlFor="telegramBotToken">
+                          {language === 'fa' ? 'توکن ربات' : 'Bot Token'}
+                        </Label>
+                        <div className="relative">
+                          <Input
+                            id="telegramBotToken"
+                            type={showPasswords['telegramBotToken'] ? 'text' : 'password'}
+                            value={crmSettings.telegramBotToken}
+                            onChange={(e) =>
+                              updateCrmSetting('telegramBotToken', e.target.value)
+                            }
+                            placeholder="Enter Telegram Bot Token"
+                          />
+                          <button
+                            onClick={() =>
+                              setShowPasswords((prev) => ({
+                                ...prev,
+                                telegramBotToken: !prev.telegramBotToken,
+                              }))
+                            }
+                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                          >
+                            {showPasswords['telegramBotToken'] ? (
+                              <EyeOff className="w-4 h-4" />
+                            ) : (
+                              <Eye className="w-4 h-4" />
+                            )}
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Email Settings */}
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <h4 className="font-semibold text-lg">
+                        {language === 'fa' ? 'ایمیل' : 'Email'}
+                      </h4>
+                      <Switch
+                        checked={crmSettings.enableEmail}
+                        onCheckedChange={(checked) =>
+                          updateCrmSetting('enableEmail', checked)
+                        }
+                      />
+                    </div>
+
+                    {crmSettings.enableEmail && (
+                      <div>
+                        <Label htmlFor="emailProvider">
+                          {language === 'fa' ? 'فراهم‌کننده' : 'Provider'}
+                        </Label>
+                        <Select
+                          value={crmSettings.emailProvider}
+                          onValueChange={(value) =>
+                            updateCrmSetting('emailProvider', value)
+                          }
+                        >
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="sendgrid">SendGrid</SelectItem>
+                            <SelectItem value="mailgun">Mailgun</SelectItem>
+                            <SelectItem value="aws">AWS SES</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    )}
                   </div>
                 </CardContent>
               </Card>
