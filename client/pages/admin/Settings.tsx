@@ -241,6 +241,29 @@ export default function AdminSettings() {
     setCrmSettings(prev => ({ ...prev, [key]: value }));
   };
 
+  const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setBranding(prev => ({
+          ...prev,
+          logoUrl: reader.result as string,
+          logoFile: file
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const removeLogo = () => {
+    setBranding(prev => ({
+      ...prev,
+      logoUrl: '',
+      logoFile: null
+    }));
+  };
+
   return (
     <AdminLayout>
       <div className="space-y-6">
