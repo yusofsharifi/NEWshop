@@ -921,6 +921,72 @@ export default function AdminSettings() {
               </Card>
             </TabsContent>
 
+            {/* Design / Color Palette Settings */}
+            <TabsContent value="design">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center">
+                    <Palette className="w-5 h-5 mr-2" />
+                    {language === 'fa' ? 'طرح‌های رنگی' : 'Color Palettes'}
+                  </CardTitle>
+                  <p className="text-sm text-gray-600 mt-2">
+                    {language === 'fa' ? 'طرح‌های رنگی مختلف را برای فروشگاه خود انتخاب کنید' : 'Choose a color palette for your store'}
+                  </p>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {colorPalettes.map((palette) => (
+                      <motion.div
+                        key={palette.id}
+                        whileHover={{ scale: 1.02 }}
+                        onClick={() => setSelectedPaletteId(palette.id)}
+                        className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${
+                          selectedPaletteId === palette.id
+                            ? 'border-blue-500 bg-blue-50'
+                            : 'border-gray-200 hover:border-gray-300'
+                        }`}
+                      >
+                        <h4 className="font-semibold text-lg mb-2">{palette.name}</h4>
+                        <p className="text-sm text-gray-600 mb-3">{palette.description}</p>
+
+                        <div className="flex gap-2 mb-3">
+                          {Object.entries(palette.colors).map(([key, color]) => (
+                            <div
+                              key={key}
+                              className="flex-1 h-12 rounded-lg border border-gray-300 hover:shadow-md transition"
+                              style={{ backgroundColor: color }}
+                              title={`${key}: ${color}`}
+                            />
+                          ))}
+                        </div>
+
+                        <p className="text-xs text-gray-500 border-t pt-2">
+                          <strong>{language === 'fa' ? 'مناسب برای:' : 'Suitable for:'}</strong> {palette.suitableFor}
+                        </p>
+
+                        {selectedPaletteId === palette.id && (
+                          <div className="mt-3 flex items-center justify-center text-green-600">
+                            <span className="text-sm font-semibold">✓ {language === 'fa' ? 'انتخاب‌شده' : 'Selected'}</span>
+                          </div>
+                        )}
+                      </motion.div>
+                    ))}
+                  </div>
+
+                  <Separator />
+
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <p className="text-sm text-blue-900">
+                      {language === 'fa'
+                        ? '💡 طرح‌های رنگی فوق‌الذکر برای تست و مقایسه در پنل مدیریت استفاده می‌شوند. در نسخه‌ی نهایی، این تنظیمات برای تمام مشتریان اعمال خواهد شد.'
+                        : '💡 These color palettes are for testing and comparison. In production, selected palette will be applied store-wide.'
+                      }
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
             {/* Features Settings */}
             <TabsContent value="features">
               <Card>
