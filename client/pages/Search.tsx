@@ -1,16 +1,13 @@
 import { useState, useEffect } from 'react';
-import { useSearchParams, Link } from 'react-router-dom';
-import { 
-  Search as SearchIcon, 
-  Filter, 
-  X, 
-  Star, 
-  Grid, 
-  List, 
-  SlidersHorizontal,
-  ArrowUpDown,
+import { Link } from 'react-router-dom';
+import {
+  Search as SearchIcon,
+  X,
+  Star,
   Heart,
-  ShoppingCart
+  SlidersHorizontal,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -20,80 +17,85 @@ import { Slider } from '@/components/ui/slider';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useSearch } from '@/hooks/useSearch';
 import { useLanguage } from '@/contexts/LanguageContext';
-import AdvancedFilters from '@/components/AdvancedFilters';
-import { useCart } from '@/contexts/CartContext';
 import { motion, AnimatePresence } from 'framer-motion';
 
+interface Product {
+  id: number;
+  name_en: string;
+  name_fa: string;
+  price: number;
+  original_price?: number;
+  rating: number;
+  review_count: number;
+  image_url: string;
+  is_bestseller: boolean;
+  brand: string;
+  category_name_en?: string;
+  category_name_fa?: string;
+  available_colors?: string[];
+  available_sizes?: string[];
+  material?: string;
+}
+
 export default function Search() {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const { t, dir, language } = useLanguage();
-  const { addItem } = useCart();
+  const { language, dir } = useLanguage();
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [query, setQuery] = useState('');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [isDesktop, setIsDesktop] = useState(false);
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [sortBy, setSortBy] = useState('relevance');
-  const [showSuggestions, setShowSuggestions] = useState(false);
-  
-  const {
-    query,
-    setQuery,
-    products,
-    suggestions,
-    isLoading,
-    filters,
-    updateFilters,
-    clearFilters,
-    filterOptions,
-    totalResults
-  } = useSearch();
+  const [sortBy, setSortBy] = useState('newest');
+  const [liked, setLiked] = useState<Set<number>>(new Set());
 
-  // Initialize search from URL params
-  useEffect(() => {
-    const q = searchParams.get('q');
-    if (q) {
-      setQuery(q);
-    }
-  }, [searchParams, setQuery]);
+  // Filters
+  const [priceRange, setPriceRange] = useState([0, 500]);
+  const [selectedSizes, setSelectedSizes] = useState<Set<string>>(new Set());
+  const [selectedColors, setSelectedColors] = useState<Set<string>>(new Set());
+  const [selectedMaterials, setSelectedMaterials] = useState<Set<string>>(new Set());
+  const [bestsellerOnly, setBestsellerOnly] = useState(false);
 
-  // Update URL when query changes
-  useEffect(() => {
-    if (query) {
-      setSearchParams({ q: query });
-    } else {
-      setSearchParams({});
-    }
-  }, [query, setSearchParams]);
+  const sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+  const colors = [
+    { name: language === 'fa' ? 'سیاه' : 'Black', hex: '#000000' },
+    { name: language === 'fa' ? 'سفید' : 'White', hex: '#FFFFFF' },
+    { name: language === 'fa' ? 'خاکستری' : 'Gray', hex: '#9CA3AF' },
+    { name: language === 'fa' ? 'نیلی' : 'Navy', hex: '#001F3F' },
+    { name: language === 'fa' ? 'قرمز' : 'Red', hex: '#EF4444' },
+    { name: language === 'fa' ? 'آبی' : 'Blue', hex: '#3B82F6' }
+  ];
+  const materials = [
+    language === 'fa' ? 'پنبه ۱۰۰%' : '100% Cotton',
+    language === 'fa' ? 'پلی استر' : 'Polyester',
+    language === 'fa' ? 'سوت' : 'Linen',
+    language === 'fa' ? 'چرم' : 'Leather'
+  ];
 
-  // Check screen size safely
   useEffect(() => {
-    const checkDesktop = () => {
-      if (typeof window !== 'undefined') {
-        setIsDesktop(window.innerWidth >= 1024);
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch('/api/products?limit=20');
+        const data = await response.json();
+        setProducts(data);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
-    checkDesktop();
-
-    if (typeof window !== 'undefined') {
-      window.addEventListener('resize', checkDesktop);
-      return () => window.removeEventListener('resize', checkDesktop);
-    }
+    fetchProducts();
   }, []);
 
-  const handleAddToCart = (product: any) => {
-    addItem({
-      id: product.id,
-      name_en: product.name_en,
-      name_fa: product.name_fa,
-      price: product.price,
-      image_url: product.image_url,
-      stock_quantity: 50 // Default stock
-    });
-  };
+  const filteredProducts = products.filter(p => {
+    const nameMatch = query === '' ||
+      p.name_en.toLowerCase().includes(query.toLowerCase()) ||
+      p.name_fa.includes(query);
+    const priceMatch = p.price >= priceRange[0] && p.price <= priceRange[1];
+    const bestsellerMatch = !bestsellerOnly || p.is_bestseller;
+    return nameMatch && priceMatch && bestsellerMatch;
+  });
 
-  const sortedProducts = [...products].sort((a, b) => {
+  const sortedProducts = [...filteredProducts].sort((a, b) => {
     switch (sortBy) {
       case 'price-low':
         return a.price - b.price;
@@ -101,288 +103,222 @@ export default function Search() {
         return b.price - a.price;
       case 'rating':
         return b.rating - a.rating;
-      case 'name':
-        const nameA = language === 'fa' ? a.name_fa : a.name_en;
-        const nameB = language === 'fa' ? b.name_fa : b.name_en;
-        return nameA.localeCompare(nameB);
+      case 'newest':
       default:
         return 0;
     }
   });
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.05,
-        delayChildren: 0.1
-      }
+  const handleLike = (id: number) => {
+    const newLiked = new Set(liked);
+    if (newLiked.has(id)) {
+      newLiked.delete(id);
+    } else {
+      newLiked.add(id);
     }
+    setLiked(newLiked);
   };
 
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: { duration: 0.4, ease: "easeOut" }
+  const toggleSize = (size: string) => {
+    const newSizes = new Set(selectedSizes);
+    if (newSizes.has(size)) {
+      newSizes.delete(size);
+    } else {
+      newSizes.add(size);
     }
+    setSelectedSizes(newSizes);
   };
 
-  const filterVariants = {
-    hidden: { x: dir === 'rtl' ? 300 : -300, opacity: 0 },
-    visible: { 
-      x: 0, 
-      opacity: 1,
-      transition: { type: "spring", stiffness: 300, damping: 30 }
-    },
-    exit: { 
-      x: dir === 'rtl' ? 300 : -300, 
-      opacity: 0,
-      transition: { duration: 0.3 }
+  const toggleColor = (colorName: string) => {
+    const newColors = new Set(selectedColors);
+    if (newColors.has(colorName)) {
+      newColors.delete(colorName);
+    } else {
+      newColors.add(colorName);
     }
+    setSelectedColors(newColors);
   };
+
+  const toggleMaterial = (material: string) => {
+    const newMaterials = new Set(selectedMaterials);
+    if (newMaterials.has(material)) {
+      newMaterials.delete(material);
+    } else {
+      newMaterials.add(material);
+    }
+    setSelectedMaterials(newMaterials);
+  };
+
+  const hasActiveFilters = selectedSizes.size > 0 || selectedColors.size > 0 || selectedMaterials.size > 0 || bestsellerOnly;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50" dir={dir}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Search Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
-        >
-          <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-            {language === 'fa' ? 'جستجو در محصولات' : 'Search Products'}
-          </h1>
-          
-          {/* Enhanced Search Bar */}
+    <div className="min-h-screen bg-white" dir={dir}>
+      {/* Header */}
+      <div className="border-b border-gray-200 bg-white sticky top-0 z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <h1 className="text-h2 text-gray-900 mb-6">{language === 'fa' ? 'جستجو' : 'Search'}</h1>
+
+          {/* Search Bar */}
           <div className="relative max-w-2xl">
-            <div className="relative">
-              <SearchIcon className={`absolute ${dir === 'rtl' ? 'right-4' : 'left-4'} top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5`} />
-              <Input
-                value={query}
-                onChange={(e) => {
-                  setQuery(e.target.value);
-                  setShowSuggestions(true);
-                }}
-                onFocus={() => setShowSuggestions(true)}
-                onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-                placeholder={language === 'fa' ? 'جستجوی محصولات...' : 'Search products...'}
-                className={`${dir === 'rtl' ? 'pr-12 pl-4' : 'pl-12 pr-4'} py-4 text-lg border-2 border-gray-200 focus:border-blue-500 rounded-xl shadow-lg`}
-              />
-              {query && (
-                <motion.button
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  onClick={() => setQuery('')}
-                  className={`absolute ${dir === 'rtl' ? 'left-4' : 'right-4'} top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600`}
-                >
-                  <X className="w-5 h-5" />
-                </motion.button>
-              )}
-            </div>
-
-            {/* Search Suggestions */}
-            <AnimatePresence>
-              {showSuggestions && suggestions.length > 0 && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  className="absolute top-full mt-2 w-full bg-white rounded-xl shadow-xl border border-gray-200 z-10 overflow-hidden"
-                >
-                  {suggestions.map((suggestion, index) => (
-                    <motion.button
-                      key={suggestion}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.05 }}
-                      whileHover={{ backgroundColor: '#f3f4f6' }}
-                      onClick={() => {
-                        setQuery(suggestion);
-                        setShowSuggestions(false);
-                      }}
-                      className="w-full text-left px-4 py-3 hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-b-0"
-                    >
-                      <div className="flex items-center space-x-3">
-                        <SearchIcon className="w-4 h-4 text-gray-400" />
-                        <span>{suggestion}</span>
-                      </div>
-                    </motion.button>
-                  ))}
-                </motion.div>
-              )}
-            </AnimatePresence>
+            <SearchIcon className={`absolute ${dir === 'rtl' ? 'right-4' : 'left-4'} top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5`} />
+            <Input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder={language === 'fa' ? 'جستجو در محصولات...' : 'Search products...'}
+              className={`${dir === 'rtl' ? 'pr-12 pl-4' : 'pl-12 pr-4'} py-3 border-2 border-gray-200 focus:border-gray-900 rounded-lg`}
+            />
+            {query && (
+              <button
+                onClick={() => setQuery('')}
+                className={`absolute ${dir === 'rtl' ? 'left-4' : 'right-4'} top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600`}
+              >
+                <X className="w-5 h-5" />
+              </button>
+            )}
           </div>
-        </motion.div>
+        </div>
+      </div>
 
-        <div className="flex flex-col lg:flex-row gap-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="flex gap-8">
           {/* Filters Sidebar */}
           <AnimatePresence>
-            {(isFilterOpen || isDesktop) && (
+            {(isFilterOpen || window.innerWidth >= 1024) && (
               <motion.div
-                variants={filterVariants}
-                initial="hidden"
-                animate="visible"
-                exit="exit"
-                className={`${isFilterOpen ? 'fixed inset-0 z-50 bg-black/50 lg:relative lg:bg-transparent' : 'hidden lg:block'} lg:w-80`}
+                initial={{ opacity: 0, x: dir === 'rtl' ? 300 : -300 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: dir === 'rtl' ? 300 : -300 }}
+                className={`${isFilterOpen ? 'fixed inset-0 z-50 bg-black/50 lg:relative lg:bg-transparent' : 'hidden lg:block'}`}
               >
-                <div className={`${isFilterOpen ? 'absolute right-0 top-0 h-full w-80 bg-white shadow-2xl' : ''} lg:relative lg:shadow-none`}>
-                  <Card className="border-0 shadow-xl bg-white/80 backdrop-blur-sm h-full lg:h-auto">
-                    <div className="p-6">
-                      <div className="flex items-center justify-between mb-6">
-                        <h3 className="text-xl font-bold text-gray-900 flex items-center">
-                          <SlidersHorizontal className="w-5 h-5 mr-2" />
-                          {language === 'fa' ? 'فیلترها' : 'Filters'}
-                        </h3>
-                        <div className="flex items-center space-x-2">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={clearFilters}
-                            className="text-blue-600 hover:text-blue-700"
-                          >
-                            {language === 'fa' ? 'پاک کردن' : 'Clear'}
-                          </Button>
-                          {isFilterOpen && (
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => setIsFilterOpen(false)}
-                              className="lg:hidden"
-                            >
-                              <X className="w-5 h-5" />
-                            </Button>
-                          )}
-                        </div>
-                      </div>
+                {isFilterOpen && (
+                  <div className="absolute inset-0 lg:hidden" onClick={() => setIsFilterOpen(false)} />
+                )}
+                <div className={`${isFilterOpen ? 'absolute right-0 top-0 h-full w-80 bg-white shadow-2xl overflow-y-auto' : ''} lg:relative lg:shadow-none lg:w-80`}>
+                  <div className="p-6 space-y-6">
+                    <div className="flex justify-between items-center">
+                      <h3 className="text-h3 text-gray-900 flex items-center gap-2">
+                        <SlidersHorizontal className="w-5 h-5" />
+                        {language === 'fa' ? 'فیلترها' : 'Filters'}
+                      </h3>
+                      {isFilterOpen && (
+                        <button
+                          onClick={() => setIsFilterOpen(false)}
+                          className="lg:hidden"
+                        >
+                          <X className="w-5 h-5" />
+                        </button>
+                      )}
+                    </div>
 
-                      <div className="space-y-6">
-                        {/* Category Filter */}
-                        {filterOptions && filterOptions.categories && (
-                        <div>
-                          <Label className="text-sm font-medium text-gray-700 mb-3 block">
-                            {language === 'fa' ? 'دسته‌بندی' : 'Category'}
-                          </Label>
-                          <Select value={filters.category || ''} onValueChange={(value) => updateFilters({ category: value || '' })}>
-                            <SelectTrigger>
-                              <SelectValue placeholder={language === 'fa' ? 'انتخاب دسته‌بندی' : 'Select category'} />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="">
-                                {language === 'fa' ? 'همه دسته‌ها' : 'All categories'}
-                              </SelectItem>
-                              {filterOptions.categories
-                                .filter(category => category && typeof category === 'string' && category.trim() !== '')
-                                .map(category => (
-                                  <SelectItem key={category} value={category}>
-                                    {category}
-                                  </SelectItem>
-                                ))}
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        )}
-
-                        {/* Brand Filter */}
-                        {filterOptions && filterOptions.brands && (
-                        <div>
-                          <Label className="text-sm font-medium text-gray-700 mb-3 block">
-                            {language === 'fa' ? 'برند' : 'Brand'}
-                          </Label>
-                          <Select value={filters.brand || ''} onValueChange={(value) => updateFilters({ brand: value || '' })}>
-                            <SelectTrigger>
-                              <SelectValue placeholder={language === 'fa' ? 'انتخاب برند' : 'Select brand'} />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="">
-                                {language === 'fa' ? 'همه برندها' : 'All brands'}
-                              </SelectItem>
-                              {filterOptions.brands
-                                .filter(brand => brand && typeof brand === 'string' && brand.trim() !== '')
-                                .map(brand => (
-                                  <SelectItem key={brand} value={brand}>
-                                    {brand}
-                                  </SelectItem>
-                                ))}
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        )}
-
-                        {/* Price Range */}
-                        <div>
-                          <Label className="text-sm font-medium text-gray-700 mb-3 block">
-                            {language === 'fa' ? 'محدوده قیمت' : 'Price Range'}
-                          </Label>
-                          <div className="space-y-4">
-                            <Slider
-                              value={[filters.minPrice, filters.maxPrice]}
-                              onValueChange={([min, max]) => updateFilters({ minPrice: min, maxPrice: max })}
-                              min={0}
-                              max={5000}
-                              step={50}
-                              className="w-full"
-                            />
-                            <div className="flex justify-between text-sm text-gray-600">
-                              <span>${filters.minPrice}</span>
-                              <span>${filters.maxPrice}</span>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Rating Filter */}
-                        <div>
-                          <Label className="text-sm font-medium text-gray-700 mb-3 block">
-                            {language === 'fa' ? 'امتیاز' : 'Rating'}
-                          </Label>
-                          <div className="space-y-2">
-                            {[4, 3, 2, 1].map(rating => (
-                              <motion.button
-                                key={rating}
-                                whileHover={{ scale: 1.02 }}
-                                whileTap={{ scale: 0.98 }}
-                                onClick={() => updateFilters({ rating: filters.rating === rating ? 0 : rating })}
-                                className={`w-full flex items-center space-x-2 p-2 rounded-lg transition-colors ${
-                                  filters.rating === rating ? 'bg-blue-100 border-blue-300' : 'hover:bg-gray-50'
-                                }`}
-                              >
-                                <div className="flex items-center">
-                                  {[...Array(5)].map((_, i) => (
-                                    <Star
-                                      key={i}
-                                      className={`w-4 h-4 ${
-                                        i < rating ? 'text-yellow-400 fill-current' : 'text-gray-300'
-                                      }`}
-                                    />
-                                  ))}
-                                </div>
-                                <span className="text-sm text-gray-700">
-                                  {language === 'fa' ? 'و بالاتر' : '& Up'}
-                                </span>
-                              </motion.button>
-                            ))}
-                          </div>
-                        </div>
-
-                        {/* Bestsellers */}
-                        <div className="flex items-center space-x-2">
-                          <Checkbox
-                            id="bestsellers"
-                            checked={filters.bestsellers}
-                            onCheckedChange={(checked) => updateFilters({ bestsellers: !!checked })}
-                          />
-                          <Label htmlFor="bestsellers" className="text-sm font-medium text-gray-700">
-                            {language === 'fa' ? 'فقط پرفروش‌ترین‌ها' : 'Bestsellers only'}
-                          </Label>
-                        </div>
+                    {/* Price Range */}
+                    <div className="space-y-4">
+                      <h4 className="font-semibold text-gray-900">{language === 'fa' ? 'قیمت' : 'Price'}</h4>
+                      <Slider
+                        value={priceRange}
+                        onValueChange={setPriceRange}
+                        min={0}
+                        max={1000}
+                        step={10}
+                        className="w-full"
+                      />
+                      <div className="flex justify-between text-sm text-gray-600">
+                        <span>${priceRange[0]}</span>
+                        <span>${priceRange[1]}</span>
                       </div>
                     </div>
-                  </Card>
+
+                    {/* Size Filter */}
+                    <div className="space-y-3">
+                      <h4 className="font-semibold text-gray-900">{language === 'fa' ? 'اندازه' : 'Size'}</h4>
+                      <div className="grid grid-cols-3 gap-2">
+                        {sizes.map((size) => (
+                          <motion.button
+                            key={size}
+                            whileHover={{ scale: 1.05 }}
+                            onClick={() => toggleSize(size)}
+                            className={`py-2 px-3 rounded-lg border-2 font-medium transition-all text-sm ${
+                              selectedSizes.has(size)
+                                ? 'border-gray-900 bg-gray-900 text-white'
+                                : 'border-gray-300 text-gray-900 hover:border-gray-600'
+                            }`}
+                          >
+                            {size}
+                          </motion.button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Color Filter */}
+                    <div className="space-y-3">
+                      <h4 className="font-semibold text-gray-900">{language === 'fa' ? 'رنگ' : 'Color'}</h4>
+                      <div className="space-y-2">
+                        {colors.map((color) => (
+                          <motion.button
+                            key={color.hex}
+                            whileHover={{ scale: 1.02 }}
+                            onClick={() => toggleColor(color.name)}
+                            className={`w-full flex items-center gap-3 p-3 rounded-lg border-2 transition-all ${
+                              selectedColors.has(color.name)
+                                ? 'border-gray-900 bg-gray-50'
+                                : 'border-gray-200 hover:border-gray-300'
+                            }`}
+                          >
+                            <div
+                              className="w-6 h-6 rounded-full border-2 border-gray-300"
+                              style={{ backgroundColor: color.hex }}
+                            />
+                            <span className="text-sm text-gray-900">{color.name}</span>
+                            {selectedColors.has(color.name) && (
+                              <span className="ml-auto text-gray-600">✓</span>
+                            )}
+                          </motion.button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Material Filter */}
+                    <div className="space-y-3">
+                      <h4 className="font-semibold text-gray-900">{language === 'fa' ? 'پارچه' : 'Material'}</h4>
+                      <div className="space-y-2">
+                        {materials.map((material) => (
+                          <label key={material} className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 cursor-pointer">
+                            <Checkbox
+                              checked={selectedMaterials.has(material)}
+                              onCheckedChange={() => toggleMaterial(material)}
+                            />
+                            <span className="text-sm text-gray-900">{material}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Bestsellers */}
+                    <label className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 cursor-pointer border-t border-gray-200 pt-6">
+                      <Checkbox
+                        checked={bestsellerOnly}
+                        onCheckedChange={(checked) => setBestsellerOnly(!!checked)}
+                      />
+                      <span className="text-sm font-medium text-gray-900">
+                        {language === 'fa' ? 'فقط پرفروش‌ها' : 'Bestsellers Only'}
+                      </span>
+                    </label>
+
+                    {/* Clear Filters */}
+                    {hasActiveFilters && (
+                      <Button
+                        variant="outline"
+                        className="w-full border-gray-900 text-gray-900 hover:bg-gray-100"
+                        onClick={() => {
+                          setSelectedSizes(new Set());
+                          setSelectedColors(new Set());
+                          setSelectedMaterials(new Set());
+                          setBestsellerOnly(false);
+                        }}
+                      >
+                        {language === 'fa' ? 'پاک کردن فیلترها' : 'Clear Filters'}
+                      </Button>
+                    )}
+                  </div>
                 </div>
               </motion.div>
             )}
@@ -392,55 +328,27 @@ export default function Search() {
           <div className="flex-1">
             {/* Results Header */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 space-y-4 sm:space-y-0"
+              className="flex justify-between items-center mb-8 flex-wrap gap-4"
             >
-              <div>
-                <h2 className="text-xl font-semibold text-gray-900">
-                  {isLoading
-                    ? (language === 'fa' ? 'در حال جستجو...' : 'Searching...')
-                    : query
-                      ? (language === 'fa' 
-                          ? `${totalResults} نتیجه برای "${query}"`
-                          : `${totalResults} results for "${query}"`)
-                      : (language === 'fa' 
-                          ? `${totalResults} محصول یافت شد`
-                          : `${totalResults} products found`)
-                  }
-                </h2>
-              </div>
+              <p className="text-gray-600">
+                {loading
+                  ? language === 'fa' ? 'در حال بارگذاری...' : 'Loading...'
+                  : language === 'fa'
+                    ? `${sortedProducts.length} محصول یافت شد`
+                    : `${sortedProducts.length} products found`}
+              </p>
 
-              <div className="flex items-center space-x-4">
-                {/* View Mode Toggle */}
-                <div className="flex items-center border border-gray-300 rounded-lg overflow-hidden">
-                  <motion.button
-                    whileHover={{ backgroundColor: '#f3f4f6' }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => setViewMode('grid')}
-                    className={`p-2 ${viewMode === 'grid' ? 'bg-blue-600 text-white' : 'text-gray-600'}`}
-                  >
-                    <Grid className="w-4 h-4" />
-                  </motion.button>
-                  <motion.button
-                    whileHover={{ backgroundColor: '#f3f4f6' }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => setViewMode('list')}
-                    className={`p-2 ${viewMode === 'list' ? 'bg-blue-600 text-white' : 'text-gray-600'}`}
-                  >
-                    <List className="w-4 h-4" />
-                  </motion.button>
-                </div>
-
-                {/* Sort Dropdown */}
-                <Select value={sortBy || 'relevance'} onValueChange={(value) => setSortBy(value || 'relevance')}>
-                  <SelectTrigger className="w-48">
-                    <ArrowUpDown className="w-4 h-4 mr-2" />
+              <div className="flex items-center gap-4">
+                {/* Sort */}
+                <Select value={sortBy} onValueChange={setSortBy}>
+                  <SelectTrigger className="w-48 border-gray-300">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="relevance">
-                      {language === 'fa' ? 'مرتبط‌ترین' : 'Most Relevant'}
+                    <SelectItem value="newest">
+                      {language === 'fa' ? 'جدیدترین' : 'Newest'}
                     </SelectItem>
                     <SelectItem value="price-low">
                       {language === 'fa' ? 'قیمت: کم به زیاد' : 'Price: Low to High'}
@@ -449,10 +357,7 @@ export default function Search() {
                       {language === 'fa' ? 'قیمت: زیاد به کم' : 'Price: High to Low'}
                     </SelectItem>
                     <SelectItem value="rating">
-                      {language === 'fa' ? 'بالاترین امتیاز' : 'Highest Rated'}
-                    </SelectItem>
-                    <SelectItem value="name">
-                      {language === 'fa' ? 'الفبایی' : 'Alphabetical'}
+                      {language === 'fa' ? 'بیشترین امتیاز' : 'Highest Rated'}
                     </SelectItem>
                   </SelectContent>
                 </Select>
@@ -461,154 +366,156 @@ export default function Search() {
                 <Button
                   variant="outline"
                   onClick={() => setIsFilterOpen(true)}
-                  className="lg:hidden"
+                  className="lg:hidden border-gray-900 text-gray-900 hover:bg-gray-100"
                 >
-                  <Filter className="w-4 h-4 mr-2" />
-                  {language === 'fa' ? 'فیلتر' : 'Filter'}
+                  <SlidersHorizontal className="w-4 h-4" />
                 </Button>
               </div>
             </motion.div>
 
-            {/* Products Grid/List */}
-            {isLoading ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {[...Array(6)].map((_, i) => (
-                  <Card key={i} className="border-0 overflow-hidden">
-                    <div className="w-full h-48 bg-gray-200 animate-pulse"></div>
-                    <CardContent className="p-4 space-y-2">
-                      <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
-                      <div className="h-3 bg-gray-200 rounded animate-pulse w-2/3"></div>
-                      <div className="h-4 bg-gray-200 rounded animate-pulse w-1/3"></div>
-                    </CardContent>
-                  </Card>
+            {/* Products Grid */}
+            {loading ? (
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+                {[...Array(8)].map((_, i) => (
+                  <div key={i} className="space-y-3">
+                    <div className="aspect-[3/4] bg-gray-200 rounded-lg animate-pulse"></div>
+                    <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
+                    <div className="h-3 bg-gray-200 rounded animate-pulse w-2/3"></div>
+                  </div>
                 ))}
               </div>
             ) : sortedProducts.length === 0 ? (
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="text-center py-12"
+                className="text-center py-16"
               >
-                <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <SearchIcon className="w-12 h-12 text-gray-400" />
-                </div>
+                <SearchIcon className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                 <h3 className="text-xl font-semibold text-gray-900 mb-2">
                   {language === 'fa' ? 'نتیجه‌ای یافت نشد' : 'No results found'}
                 </h3>
                 <p className="text-gray-600">
                   {language === 'fa'
-                    ? 'لطفاً کلمات کلیدی دیگری امتحان کنید'
-                    : 'Try different keywords or adjust your filters'
-                  }
+                    ? 'لطفاً فیلترها یا جستجوی خود را تغییر دهید'
+                    : 'Try adjusting your filters or search'}
                 </p>
               </motion.div>
             ) : (
               <motion.div
-                variants={containerVariants}
-                initial="hidden"
-                animate="visible"
-                className={viewMode === 'grid' 
-                  ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-                  : "space-y-4"
-                }
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6"
               >
-                {sortedProducts.map((product) => {
+                {sortedProducts.map((product, index) => {
                   const productName = language === 'fa' ? product.name_fa : product.name_en;
-                  const categoryName = language === 'fa' ? product.category_name_fa : product.category_name_en;
-                  
+                  const discount = product.original_price
+                    ? Math.round(((product.original_price - product.price) / product.original_price) * 100)
+                    : 0;
+
                   return (
-                    <motion.div key={product.id} variants={itemVariants}>
-                      <Card className={`border-0 shadow-lg hover:shadow-xl transition-all duration-300 group overflow-hidden ${
-                        viewMode === 'list' ? 'flex' : ''
-                      }`}>
-                        <div className={`relative ${viewMode === 'list' ? 'w-48 flex-shrink-0' : ''}`}>
-                          <Link to={`/product/${product.id}`}>
-                            <motion.img
-                              whileHover={{ scale: 1.05 }}
-                              src={product.image_url}
-                              alt={productName}
-                              className={`w-full object-cover transition-transform duration-300 ${
-                                viewMode === 'list' ? 'h-full' : 'h-48'
+                    <motion.div
+                      key={product.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.05 }}
+                    >
+                      <Link to={`/product/${product.id}`} className="block group">
+                        <div className="relative mb-3 bg-gray-100 rounded-lg aspect-[3/4] overflow-hidden">
+                          <motion.img
+                            whileHover={{ scale: 1.05 }}
+                            src={product.image_url}
+                            alt={productName}
+                            className="w-full h-full object-cover transition-transform duration-300"
+                          />
+
+                          {/* Badges */}
+                          {(product.is_bestseller || discount > 0) && (
+                            <div className="absolute top-2 left-2 flex gap-2">
+                              {product.is_bestseller && (
+                                <Badge className="bg-green-500 text-white text-xs">
+                                  {language === 'fa' ? 'پرفروش' : 'Best'}
+                                </Badge>
+                              )}
+                              {discount > 0 && (
+                                <Badge className="bg-red-500 text-white text-xs">
+                                  -{discount}%
+                                </Badge>
+                              )}
+                            </div>
+                          )}
+
+                          {/* Like Button */}
+                          <motion.button
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleLike(product.id);
+                            }}
+                            className="absolute top-2 right-2 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-colors"
+                          >
+                            <Heart
+                              className={`w-5 h-5 ${
+                                liked.has(product.id)
+                                  ? 'fill-red-500 text-red-500'
+                                  : 'text-gray-600'
                               }`}
                             />
-                          </Link>
-                          
-                          <div className="absolute top-3 left-3 space-y-1">
-                            {product.is_bestseller && (
-                              <Badge className="bg-yellow-500 text-white">
-                                {language === 'fa' ? 'پرفروش' : 'Bestseller'}
-                              </Badge>
-                            )}
-                          </div>
+                          </motion.button>
+                        </div>
+                      </Link>
 
-                          <div className="absolute top-3 right-3">
-                            <motion.button
-                              whileHover={{ scale: 1.1 }}
-                              whileTap={{ scale: 0.9 }}
-                              className="w-8 h-8 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-colors"
-                            >
-                              <Heart className="w-4 h-4 text-gray-600" />
-                            </motion.button>
+                      <div className="space-y-2">
+                        {/* Product Name */}
+                        <Link to={`/product/${product.id}`}>
+                          <h3 className="text-sm font-medium text-gray-900 hover:text-gray-600 transition-colors line-clamp-2">
+                            {productName}
+                          </h3>
+                        </Link>
+
+                        {/* Rating */}
+                        <div className="flex items-center gap-1">
+                          <div className="flex gap-0.5">
+                            {[...Array(5)].map((_, i) => (
+                              <Star
+                                key={i}
+                                className={`w-3 h-3 ${
+                                  i < Math.floor(product.rating)
+                                    ? 'fill-yellow-400 text-yellow-400'
+                                    : 'text-gray-300'
+                                }`}
+                              />
+                            ))}
                           </div>
+                          <span className="text-xs text-gray-500">({product.review_count})</span>
                         </div>
 
-                        <CardContent className={`${viewMode === 'list' ? 'flex-1 flex flex-col justify-between' : ''} p-4`}>
-                          <div>
-                            <div className="flex items-center justify-between mb-2">
-                              <Badge variant="outline" className="text-xs">
-                                {categoryName}
-                              </Badge>
-                              <span className="text-xs text-gray-500">{product.brand}</span>
-                            </div>
+                        {/* Price */}
+                        <div className="flex items-baseline gap-2">
+                          <span className="font-bold text-gray-900">${product.price}</span>
+                          {product.original_price && (
+                            <span className="text-xs text-gray-500 line-through">
+                              ${product.original_price}
+                            </span>
+                          )}
+                        </div>
 
-                            <Link to={`/product/${product.id}`}>
-                              <h3 className="font-semibold text-gray-900 mb-2 hover:text-blue-600 transition-colors line-clamp-2">
-                                {productName}
-                              </h3>
-                            </Link>
-
-                            <div className="flex items-center mb-3">
-                              <div className="flex items-center">
-                                {[...Array(5)].map((_, i) => (
-                                  <Star
-                                    key={i}
-                                    className={`w-4 h-4 ${
-                                      i < Math.floor(product.rating)
-                                        ? 'text-yellow-400 fill-current'
-                                        : 'text-gray-300'
-                                    }`}
-                                  />
-                                ))}
-                              </div>
-                              <span className="text-sm text-gray-600 ml-2">
-                                ({product.rating})
-                              </span>
-                            </div>
+                        {/* Available Colors */}
+                        {product.available_colors && product.available_colors.length > 0 && (
+                          <div className="flex gap-1 pt-1">
+                            {product.available_colors.slice(0, 3).map((color, i) => (
+                              <div
+                                key={i}
+                                className="w-4 h-4 rounded-full border border-gray-300"
+                                style={{ backgroundColor: color }}
+                              />
+                            ))}
+                            {product.available_colors.length > 3 && (
+                              <span className="text-xs text-gray-500">+{product.available_colors.length - 3}</span>
+                            )}
                           </div>
-
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <span className="text-xl font-bold text-gray-900">
-                                ${product.price}
-                              </span>
-                            </div>
-
-                            <motion.div
-                              whileHover={{ scale: 1.05 }}
-                              whileTap={{ scale: 0.95 }}
-                            >
-                              <Button
-                                size="sm"
-                                onClick={() => handleAddToCart(product)}
-                                className="bg-blue-600 hover:bg-blue-700"
-                              >
-                                <ShoppingCart className="w-4 h-4 mr-1" />
-                                {language === 'fa' ? 'افزودن' : 'Add'}
-                              </Button>
-                            </motion.div>
-                          </div>
-                        </CardContent>
-                      </Card>
+                        )}
+                      </div>
                     </motion.div>
                   );
                 })}
