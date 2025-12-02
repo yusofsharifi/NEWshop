@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Save, Globe, ShoppingCart, Mail, Bell, Shield, Database, Palette, CreditCard, MessageSquare, Trash2, Plus, Eye, EyeOff } from 'lucide-react';
+import { Save, Globe, ShoppingCart, Mail, Bell, Shield, Database, Palette, CreditCard, MessageSquare, Trash2, Plus, Eye, EyeOff, Upload, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
