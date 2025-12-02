@@ -338,6 +338,72 @@ export default function AdminSettings() {
               </TabsTrigger>
             </TabsList>
 
+            {/* Branding Settings */}
+            <TabsContent value="branding">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center">
+                    <Globe className="w-5 h-5 mr-2" />
+                    {language === 'fa' ? 'تنظیمات برند' : 'Branding Settings'}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div>
+                    <Label htmlFor="brandName">{language === 'fa' ? 'نام برند' : 'Brand Name'}</Label>
+                    <Input
+                      id="brandName"
+                      value={branding.brandName}
+                      onChange={(e) => setBranding(prev => ({ ...prev, brandName: e.target.value }))}
+                      placeholder={language === 'fa' ? 'نام برند خود را وارد کنید' : 'Enter your brand name'}
+                    />
+                    <p className="text-sm text-gray-500 mt-2">
+                      {language === 'fa' ? 'نام برند در بالای هدر نمایش داده خواهد شد' : 'This will be displayed above the header'}
+                    </p>
+                  </div>
+
+                  <Separator />
+
+                  <div>
+                    <Label>{language === 'fa' ? 'لوگوی فروشگاه' : 'Store Logo'}</Label>
+                    <p className="text-sm text-gray-600 mb-4">
+                      {language === 'fa' ? 'لوگوی خود را بارگذاری کنید. فرمت‌های توصیه‌شده: PNG, SVG, JPG' : 'Recommended formats: PNG, SVG, JPG'}
+                    </p>
+
+                    {branding.logoUrl ? (
+                      <div className="relative inline-block">
+                        <img
+                          src={branding.logoUrl}
+                          alt="Logo preview"
+                          className="h-32 w-auto rounded-lg border border-gray-300 object-cover"
+                        />
+                        <button
+                          onClick={removeLogo}
+                          className="absolute top-0 right-0 bg-red-500 text-white p-1 rounded-full hover:bg-red-600 transform translate-x-2 -translate-y-2"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ) : (
+                      <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition">
+                        <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                          <Upload className="w-8 h-8 text-gray-400 mb-2" />
+                          <p className="text-sm text-gray-500">
+                            {language === 'fa' ? 'برای انتخاب فایل کلیک کنید یا بکشید' : 'Click or drag to upload'}
+                          </p>
+                        </div>
+                        <input
+                          type="file"
+                          className="hidden"
+                          accept="image/*"
+                          onChange={handleLogoUpload}
+                        />
+                      </label>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
             {/* General Settings */}
             <TabsContent value="general">
               <Card>
