@@ -44,11 +44,15 @@
 
 @layer base {
   /**
-   * Tailwind CSS theme
-   * tailwind.config.ts expects the following color variables to be expressed as HSL values.
-   * A different format will require also updating the theme in tailwind.config.ts.
-  */
+   * Typography System for Fashion Store
+   * Using Persian fonts for optimal reading experience
+   */
+
+  /* Define font families */
   :root {
+    --font-sans: 'IranSans', 'system-ui', 'sans-serif';
+    --font-display: 'Dana', 'IranSans', 'system-ui', 'sans-serif';
+    --font-mono: 'Courier Prime', 'monospace';
     --background: 0 0% 100%;
     --foreground: 210 40% 20%;
 
