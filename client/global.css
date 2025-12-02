@@ -1,3 +1,43 @@
+/* Import Persian Fonts from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap');
+
+/* Persian Font Faces */
+@font-face {
+  font-family: 'IranSans';
+  src: url('https://cdn.jsdelivr.net/npm/iranfonts@5.0.0/dist/iransans/iransans.woff2') format('woff2');
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: 'IranSans';
+  src: url('https://cdn.jsdelivr.net/npm/iranfonts@5.0.0/dist/iransans/iransans-bold.woff2') format('woff2');
+  font-weight: bold;
+}
+
+@font-face {
+  font-family: 'Vazir';
+  src: url('https://cdn.jsdelivr.net/npm/vazir-font@30.1.0/dist/Vazir.woff2') format('woff2');
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: 'Vazir';
+  src: url('https://cdn.jsdelivr.net/npm/vazir-font@30.1.0/dist/Vazir-Bold.woff2') format('woff2');
+  font-weight: bold;
+}
+
+@font-face {
+  font-family: 'Shabnam';
+  src: url('https://cdn.jsdelivr.net/npm/shabnam-font@4.4.0/dist/Shabnam.woff2') format('woff2');
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: 'Shabnam';
+  src: url('https://cdn.jsdelivr.net/npm/shabnam-font@4.4.0/dist/Shabnam-Bold.woff2') format('woff2');
+  font-weight: bold;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
