@@ -377,12 +377,6 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                 >
                   <Menu className="w-5 h-5" />
                 </Button>
-
-                <h1
-                  className={`${dir === "rtl" ? "mr-4" : "ml-4"} text-2xl font-semibold text-gray-900`}
-                >
-                  {language === "fa" ? "��نل مدیریت" : "Admin Dashboard"}
-                </h1>
               </div>
 
               <div className="flex items-center space-x-4">
