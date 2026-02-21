@@ -227,7 +227,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
   return (
     <div
-      className={`min-h-screen bg-gray-100 ${dir === "rtl" ? "rtl" : "ltr"}`}
+      className={`min-h-screen bg-gray-50 ${dir === "rtl" ? "rtl" : "ltr"}`}
       dir={dir}
     >
       {/* Mobile sidebar backdrop */}
@@ -242,7 +242,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
       {/* Sidebar */}
       <div
-        className={`fixed inset-y-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 ${
+        className={`fixed inset-y-0 z-50 w-64 bg-white border-r border-gray-200 transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 ${
           sidebarOpen
             ? "translate-x-0"
             : dir === "rtl"
@@ -252,40 +252,40 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       >
         <div className="flex items-center justify-between h-16 px-4 border-b border-gray-200">
           <Link to="/admin" className="flex items-center">
-            <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
-              <div className="w-4 h-4 bg-white rounded-full opacity-90"></div>
+            <div className="w-8 h-8 bg-black rounded-sm flex items-center justify-center">
+              <div className="w-5 h-5 bg-white rounded-sm opacity-80"></div>
             </div>
             <span
-              className={`${dir === "rtl" ? "mr-3" : "ml-3"} text-xl font-bold text-gray-900`}
+              className={`${dir === "rtl" ? "mr-2" : "ml-2"} text-lg font-bold text-black`}
             >
-              {language === "fa" ? "پنل مدیریت" : "Admin Panel"}
+              {language === "fa" ? "مدیریت" : "Admin"}
             </span>
           </Link>
 
           <Button
             variant="ghost"
             size="sm"
-            className="lg:hidden"
+            className="lg:hidden h-8 w-8 p-0"
             onClick={() => setSidebarOpen(false)}
           >
-            <X className="w-5 h-5" />
+            <X className="w-5 h-5 text-gray-700" />
           </Button>
         </div>
 
-        <nav className="mt-8 px-4 space-y-1 overflow-y-auto" style={{ maxHeight: "calc(100vh - 200px)" }}>
+        <nav className="mt-6 px-3 space-y-1 overflow-y-auto" style={{ maxHeight: "calc(100vh - 200px)" }}>
           {navigationSections.map((section) => (
             <div key={section.id}>
               {section.id === "main" ? (
-                <div className="space-y-2">
+                <div className="space-y-1">
                   {section.items.map((item) => (
                     <Link
                       key={item.href}
                       to={item.href}
                       onClick={() => setSidebarOpen(false)}
-                      className={`group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors ${
+                      className={`flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-all ${
                         isCurrentPath(item.href)
-                          ? "bg-blue-100 text-blue-700"
-                          : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                          ? "bg-black text-white"
+                          : "text-gray-700 hover:bg-gray-100"
                       }`}
                     >
                       <item.icon
@@ -299,31 +299,31 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                 <div className="mt-4">
                   <button
                     onClick={() => toggleSection(section.id)}
-                    className="w-full flex items-center justify-between px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+                    className="w-full flex items-center justify-between px-3 py-2 text-sm font-semibold text-gray-900 hover:bg-gray-100 rounded-lg transition-all"
                   >
                     <div className="flex items-center">
                       <section.icon
-                        className={`flex-shrink-0 w-5 h-5 ${dir === "rtl" ? "ml-3" : "mr-3"}`}
+                        className={`flex-shrink-0 w-5 h-5 text-gray-600 ${dir === "rtl" ? "ml-3" : "mr-3"}`}
                       />
                       {language === "fa" ? section.name_fa : section.name_en}
                     </div>
                     <ChevronDown
-                      className={`w-4 h-4 transition-transform ${expandedSections[section.id] ? "rotate-180" : ""}`}
+                      className={`w-4 h-4 text-gray-600 transition-transform ${expandedSections[section.id] ? "rotate-180" : ""}`}
                     />
                   </button>
 
                   {expandedSections[section.id] && (
-                    <div className="mt-2 space-y-1">
+                    <div className="mt-2 space-y-1 ml-2">
                       {section.items.map((item) => (
                         <Link
                           key={item.href}
                           to={item.href}
                           onClick={() => setSidebarOpen(false)}
-                          className={`group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors ${
+                          className={`flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-all ${
                             isCurrentPath(item.href)
-                              ? "bg-blue-100 text-blue-700"
+                              ? "bg-gray-900 text-white"
                               : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
-                          } ${dir === "rtl" ? "pr-2" : "pl-2"}`}
+                          }`}
                         >
                           <item.icon
                             className={`flex-shrink-0 w-4 h-4 ${dir === "rtl" ? "ml-3" : "mr-3"}`}
@@ -338,20 +338,20 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             </div>
           ))}
 
-          <div className="mt-8 pt-8 border-t border-gray-200">
+          <div className="mt-8 pt-6 border-t border-gray-200 space-y-1">
             <Link
               to="/"
-              className="group flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-100 hover:text-gray-900"
+              className="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 transition-all"
             >
               <Home
-                className={`flex-shrink-0 w-5 h-5 ${dir === "rtl" ? "ml-3" : "mr-3"}`}
+                className={`flex-shrink-0 w-5 h-5 text-gray-600 ${dir === "rtl" ? "ml-3" : "mr-3"}`}
               />
-              {language === "fa" ? "بازگشت به سایت" : "Back to Website"}
+              {language === "fa" ? "بازگشت" : "Back to Site"}
             </Link>
 
             <button
               onClick={handleLogout}
-              className="w-full group flex items-center px-3 py-2 text-sm font-medium text-red-600 rounded-md hover:bg-red-50 hover:text-red-700 transition-colors"
+              className="w-full flex items-center px-3 py-2 text-sm font-medium text-red-600 rounded-lg hover:bg-red-50 transition-all"
             >
               <LogOut
                 className={`flex-shrink-0 w-5 h-5 ${dir === "rtl" ? "ml-3" : "mr-3"}`}
@@ -365,36 +365,26 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       {/* Main content */}
       <div className="lg:ml-64 flex flex-col flex-1">
         {/* Top navigation */}
-        <div className="bg-white shadow-sm border-b border-gray-200">
+        <div className="bg-white border-b border-gray-200">
           <div className="px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between h-16">
+            <div className="flex justify-between items-center h-16">
               <div className="flex items-center">
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="lg:hidden"
+                  className="lg:hidden h-8 w-8 p-0"
                   onClick={() => setSidebarOpen(true)}
                 >
-                  <Menu className="w-5 h-5" />
+                  <Menu className="w-5 h-5 text-gray-700" />
                 </Button>
               </div>
 
-              <div className="flex items-center space-x-4">
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white text-sm font-semibold">
-                    {user?.username.charAt(0).toUpperCase()}
-                  </div>
-                  <div className="hidden sm:block">
-                    <div className="text-sm font-medium text-gray-900">
-                      {language === "fa" ? "خوش آمدید" : "Welcome"},{" "}
-                      {user?.username}
-                    </div>
-                    <div className="text-xs text-gray-500">
-                      {language === "fa"
-                        ? "مدیر سیستم"
-                        : "System Administrator"}
-                    </div>
-                  </div>
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center text-xs font-semibold text-gray-700">
+                  {user?.username.charAt(0).toUpperCase()}
+                </div>
+                <div className="hidden sm:block">
+                  <p className="text-xs text-gray-600">{user?.username}</p>
                 </div>
               </div>
             </div>
@@ -402,7 +392,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         </div>
 
         {/* Page content */}
-        <main className="flex-1 py-6">
+        <main className="flex-1 py-8">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             {children}
           </div>

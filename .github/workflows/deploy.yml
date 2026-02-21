@@ -1,0 +1,269 @@
+name: Build & Deploy
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: Test & Lint
+    
+    strategy:
+      matrix:
+        node-version: [20.x]
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint code
+        run: npm run lint --if-present
+        continue-on-error: true
+
+      - name: Run tests
+        run: npm test --if-present
+        continue-on-error: true
+
+      - name: Build application
+        run: npm run build
+
+  security-scan:
+    runs-on: ubuntu-latest
+    name: Security Scan
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run npm audit
+        run: npm audit --audit-level=moderate
+        continue-on-error: true
+
+      - name: Run SNYK security scan
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        continue-on-error: true
+
+  deploy-staging:
+    runs-on: ubuntu-latest
+    name: Deploy to Staging
+    needs: [test, security-scan]
+    if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to staging
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.STAGING_HOST }}
+          username: ${{ secrets.STAGING_USER }}
+          key: ${{ secrets.STAGING_SSH_KEY }}
+          script: |
+            cd /app/src
+            git fetch origin develop
+            git reset --hard origin/develop
+            npm ci
+            npm run build
+            pm2 reload ecosystem.config.js --env staging
+            echo "✅ Staging deployment complete"
+
+      - name: Send Slack notification
+        if: always()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          text: 'Staging deployment: ${{ job.status }}'
+          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+          channel: '#deployments'
+
+  deploy-production:
+    runs-on: ubuntu-latest
+    name: Deploy to Production
+    needs: [test, security-scan]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    
+    environment:
+      name: production
+      url: https://yourdomain.com
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create deployment
+        uses: actions/github-script@v7
+        id: deployment
+        with:
+          script: |
+            const deployment = await github.rest.repos.createDeployment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: context.ref,
+              environment: 'production',
+              required_contexts: [],
+              auto_merge: false
+            });
+            return deployment.data.id;
+
+      - name: Deploy to production
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.PROD_HOST }}
+          username: ${{ secrets.PROD_USER }}
+          key: ${{ secrets.PROD_SSH_KEY }}
+          script: |
+            set -e
+            echo "🚀 Starting production deployment..."
+            
+            # Navigate to app directory
+            cd /app/src
+            
+            # Create backup before deployment
+            /app/backup.sh
+            
+            # Fetch and reset to main branch
+            git fetch origin main
+            git reset --hard origin/main
+            
+            # Install dependencies
+            npm ci
+            
+            # Build application
+            npm run build
+            
+            # Run migrations if needed
+            npm run migrate --if-present
+            
+            # Reload application with PM2
+            pm2 reload ecosystem.config.js --env production
+            
+            # Wait for application to be ready
+            sleep 5
+            
+            # Health check
+            if curl -f http://localhost:3000/health > /dev/null 2>&1; then
+              echo "✅ Application is healthy"
+            else
+              echo "❌ Health check failed!"
+              exit 1
+            fi
+
+      - name: Update deployment status - Success
+        if: success()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.repos.createDeploymentStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              deployment_id: ${{ steps.deployment.outputs.result }},
+              state: 'success',
+              environment_url: 'https://yourdomain.com',
+              description: 'Production deployment successful'
+            });
+
+      - name: Update deployment status - Failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.repos.createDeploymentStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              deployment_id: ${{ steps.deployment.outputs.result }},
+              state: 'failure',
+              description: 'Production deployment failed'
+            });
+
+      - name: Notify Slack - Success
+        if: success()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: success
+          text: |
+            ✅ Production deployment successful
+            Branch: ${{ github.ref }}
+            Commit: ${{ github.sha }}
+            Author: ${{ github.actor }}
+          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+          channel: '#deployments'
+          fields: repo,message,commit,author
+
+      - name: Notify Slack - Failure
+        if: failure()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: failure
+          text: |
+            ❌ Production deployment failed
+            Branch: ${{ github.ref }}
+            Commit: ${{ github.sha }}
+            Author: ${{ github.actor }}
+          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+          channel: '#deployments'
+          fields: repo,message,commit,author
+
+  rollback:
+    runs-on: ubuntu-latest
+    name: Rollback (Manual Trigger)
+    if: github.event_name == 'workflow_dispatch'
+    
+    environment:
+      name: production
+    
+    steps:
+      - name: Checkout previous version
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Get previous commit
+        id: previous
+        run: |
+          echo "commit=$(git rev-parse HEAD~1)" >> $GITHUB_OUTPUT
+
+      - name: Rollback deployment
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.PROD_HOST }}
+          username: ${{ secrets.PROD_USER }}
+          key: ${{ secrets.PROD_SSH_KEY }}
+          script: |
+            cd /app/src
+            git reset --hard ${{ steps.previous.outputs.commit }}
+            npm run build
+            pm2 reload ecosystem.config.js --env production
+            echo "✅ Rolled back to previous version"
+
+      - name: Notify Slack - Rollback
+        uses: 8398a7/action-slack@v3
+        with:
+          status: success
+          text: |
+            🔄 Production rollback completed
+            Rolled back to: ${{ steps.previous.outputs.commit }}
+          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+          channel: '#deployments'

@@ -940,32 +940,33 @@ export default function AdminSettings() {
                         key={palette.id}
                         whileHover={{ scale: 1.02 }}
                         onClick={() => setSelectedPaletteId(palette.id)}
-                        className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${
+                        className={`border-2 rounded-lg p-5 cursor-pointer transition-all ${
                           selectedPaletteId === palette.id
-                            ? 'border-blue-500 bg-blue-50'
+                            ? 'border-black bg-black/5'
                             : 'border-gray-200 hover:border-gray-300'
                         }`}
                       >
                         <h4 className="font-semibold text-lg mb-2">{palette.name}</h4>
-                        <p className="text-sm text-gray-600 mb-3">{palette.description}</p>
+                        <p className="text-sm text-gray-600 mb-4">{palette.description}</p>
 
-                        <div className="flex gap-2 mb-3">
+                        <div className="grid grid-cols-4 gap-2 mb-4">
                           {Object.entries(palette.colors).map(([key, color]) => (
                             <div
                               key={key}
-                              className="flex-1 h-12 rounded-lg border border-gray-300 hover:shadow-md transition"
+                              className="h-16 rounded-md border border-gray-300 hover:shadow-md transition"
                               style={{ backgroundColor: color }}
                               title={`${key}: ${color}`}
                             />
                           ))}
                         </div>
 
-                        <p className="text-xs text-gray-500 border-t pt-2">
-                          <strong>{language === 'fa' ? 'مناسب برای:' : 'Suitable for:'}</strong> {palette.suitableFor}
+                        <p className="text-xs text-gray-600 border-t pt-3">
+                          <strong>{language === 'fa' ? 'مناسب برای:' : 'Suitable for:'}</strong>
+                          <span className="block text-gray-500 mt-1">{palette.suitableFor}</span>
                         </p>
 
                         {selectedPaletteId === palette.id && (
-                          <div className="mt-3 flex items-center justify-center text-green-600">
+                          <div className="mt-4 pt-3 border-t flex items-center justify-center text-black">
                             <span className="text-sm font-semibold">✓ {language === 'fa' ? 'انتخاب‌شده' : 'Selected'}</span>
                           </div>
                         )}
@@ -975,11 +976,11 @@ export default function AdminSettings() {
 
                   <Separator />
 
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                    <p className="text-sm text-blue-900">
+                  <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                    <p className="text-sm text-gray-700">
                       {language === 'fa'
-                        ? '💡 طرح‌های رنگی فوق‌الذکر برای تست و مقایسه در پنل مدیریت استفاده می‌شوند. در نسخه‌ی نهایی، این تنظیمات برای تمام مشتریان اعمال خواهد شد.'
-                        : '💡 These color palettes are for testing and comparison. In production, selected palette will be applied store-wide.'
+                        ? '💡 طرح‌های رنگی برای تست و مقایسه در پنل مدیریت استفاده می‌شوند. طرح انتخاب‌شده در سراسر فروشگاه اعمال خواهد شد.'
+                        : '💡 These color palettes are for testing and comparison. Selected palette will be applied store-wide.'
                       }
                     </p>
                   </div>
